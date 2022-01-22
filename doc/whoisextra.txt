@@ -1,0 +1,24 @@
+######################################################################
+
+whoisextra - RPL_WHOISEXTRA numeric 320 for irc2.11.2p3
+
+######################################################################
+
+define WHOISEXTRA in config.h to add RPL_WHOISEXTRA numeric 320 with
+format ":%s 320 %s %s :%s"
+
+WHOISEXTRA is enabled by default
+
+this is non-standard use of numeric 320
+
+######################################################################
+
+changelog:
+
+ v1.00
+
+ 2020-01-11 -- mh
+
+  * initial version
+
+######################################################################

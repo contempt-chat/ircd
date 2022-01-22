@@ -1,0 +1,22 @@
+$Id: README,v 1.7 2001/10/20 17:57:23 q Exp $
+
+**********************************************************************
+DISCLAIMER:
+This directory contains programs or patches that have been contributed
+by other people and/or are not suitable for including in IRCD program.
+IRCD team bears no responsibility for bugs in these programs.
+**********************************************************************
+
+Each contribution lives in its own directory under contrib/ and has a
+README file.  For those which need to be compiled, this can be done in
+the same directory as you compiled irc and/or ircd.
+
+If you want to submit a package for this directory, see the RULES file.
+
+---
+
+mkpasswd	utility to crypt a password.
+ircdwatch	utility to keep ircd running (eventually restarting it).
+tkserv		stupid toy to manage "temporary" klines.
+mod_passwd	example of DSM module for iauth
+antispoof.diff	diff file to add extra code to ircd to prevent TCP spoofing

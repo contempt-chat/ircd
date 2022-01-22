@@ -1,0 +1,184 @@
+######################################################################
+
+passopts - extended PASS options for irc2.11.2p3
+
+######################################################################
+
+an attempt to solve the problem with clients connecting with a
+password, expecting it to match an I-line, but matching another non-
+passworded I-line (possibly revealing their real address if spoofed)
+
+this current proposal (passopts v1) is far from perfect and it still
+needs some adjusting, it might change entirely. it does not work with
+: prefixed passwords (passwords which may or may not have a space)
+
+i does however work quite well for many clients and is not breaking
+anything for the rest (passopts just doesnt work for them)
+
+PASSOPTS is enabled by default
+
+######################################################################
+
+current proposal (as implemented in passopts v1):
+
+ PASS <password> [<passopts>]
+
+  ignore remaining arguments if any
+
+  <password>
+   password as per RFC
+
+  <passopts>
+   integer (in base 10 only) bitfield of password options
+
+  fail gracefully if <passopts> is not numeric (as if 0)
+
+  ignore unknown bits if any
+
+  allow prepended 0s
+
+  0x01 POFLAG_REQPASS
+    require I-line password match client password and do not allow
+    matching empty I-line password
+
+  examples:
+
+   PASS mustmatch 1
+   PASS dontcare 0
+   PASS mustmatch 007
+   PASS dontcare 42
+   PASS mustmatch 1 any thing
+
+ thank you to the following people for helping with the first draft
+ of the passopts specification: BR and patrick
+
+######################################################################
+
+client compatibility notes (passopts v1):
+
+ rev 1.04 -- mh 20200420
+  * TheLounge webclient compatibility added
+  * eggdrop bot compatibility added (from BR)
+ rev 1.03 -- mh 20200118
+  * major cosmetic cleanup
+ rev 1.02 -- mh 20200107
+  * kiwiirc client compatibility updated (removed reminder to self -
+    "PASS :x y" is being looked into now :)
+  * weechat client compatibility updated (from doni/patrick)
+  * minor cosmetic cleanup
+ rev 1.01 -- mh 20200106
+  * minor cosmetic ckeanup
+  * kiwiirc.com client compatibility added
+  * xchat and colloquy client compatibility added (from proto)
+ rev 1.00 -- mh 20200106
+  * first draft
+
+ Android IRC (IRC for Android)                           [compatible]
+
+  no known issues
+
+
+ Colloquy                                                [compatible]
+
+  no known issues
+
+
+ eggdrop                                                 [compatible]
+
+  use "<pass>\ <passopts>"
+
+
+ ircII/EPIC                                       [almost compatible]
+
+  /xeval xecho $serverctl(SET 0 PASSWORD <password> <passopts>)
+
+
+ Irssi                                                   [compatible]
+
+  /connect <server> <port> "<pass> <passopts>"
+
+  config stores password correctly, and client generally supports
+  passopts (as long as they are given in quotes)
+
+  commandline -w and --password do not work - even if quoted
+
+
+ kiwiirc.com                                         [not compatible]
+
+  sends ":<password> <passopts>" which does not work
+
+
+ mibbit.com                                          [not compatible]
+
+  does not support spaces in the password field
+
+
+ mIRC                                                    [compatible]
+
+  no known issues
+
+
+ Palaver for IOS                                         [compatible]
+
+  no known issues
+
+
+ Textual                                                 [compatible]
+
+  no known issues
+
+
+ TheLounge                                           [not compatible]
+
+  does not pass on the <space>1 if set in password
+
+
+ webchat.ircnet.net                                  [not compatible]
+
+  does not have a password field enabled at all
+
+
+ weechat                                             [not compatible]
+
+  sends ":<password> <passopts>" which does not work
+
+
+ xchat                                                   [compatible]
+
+  no known issues
+
+
+ znc                                                     [compatible]
+
+  no known issues
+
+ if you find a mistake in the list or have any new information about
+ a client please let me know -- mh on IRCnet #ircnet.com
+
+ thank you to the following people for helping with and reporting
+ results on client compatibility tests: BR, doni, patrick, and proto
+
+######################################################################
+
+changelog:
+
+ v1.01
+
+ 2020-01-12 -- mh
+
+  * ircd/s_conf.c:attach_Iline(): simplified the code sending an
+    error if a clients required password didnt match any I-line
+
+  * removed passopts spec. from source, its in doc/passopts.txt now
+
+ 2020-01-11 -- mh
+
+  * passopts are now checked against defined flags, not a hardcoded
+    value. so far there is only one flag POFLAG_REQPASS
+
+  * added doc/passopts.txt to patch.
+
+  * based on passopts v1 (po+spoof) which is in turn based on the
+    ircd spoof patch by patrick at ircnet.com.
+
+######################################################################

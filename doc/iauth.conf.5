@@ -1,0 +1,217 @@
+.\" @(#)$Id: iauth.conf.5,v 1.23 2004/12/16 16:14:06 chopin Exp $
+.TH IAUTH.CONF 5 "$Date: 2004/12/16 16:14:06 $"
+.SH NAME
+iauth.conf \- The Internet Relay Chat Authentication Configuration File
+.SH DESCRIPTION
+.LP
+The \fIiauth.conf\fP file is read by the \fIiauth\fP program upon startup,
+it contains the list of modules that should be used to authenticate a
+particular connection.  The list is ordered, which means that the first
+module to successfully authenticate a connection will be the last to be
+tried.
+
+The file is divided in sections, the first section is used for iauth
+options, each subsequent section specifies a module with eventual options
+using the following format:
+
+.RS
+.nf
+module\ \fImodule-name\fP
+[TAB]option = \fIstring\fP
+[TAB]host = \fIhost-name\fP
+[TAB]ip = \fIip-address\fP
+[TAB]timeout = \fIvalue\fP
+[TAB]port = \fIvalue\fP
+[TAB]reason = \fIstring\fP
+
+.fi
+.RE
+The section ends with an empty line.  The \fImodule-name\fP defines which
+module the section applies to.  A particular module may be used in several
+sections.  An option \fIstring\fP of undefined format may be specified, it will
+then be passed to the module upon initialization, see the MODULES section
+to find out if a module accepts any option.
+
+If \fIhost-name\fP and \fIip-address\fP fields are specified, then the
+module will only be used for connections matching one of the fields given
+in the configuration.  An entry prefixed with the character ! indicates a
+negative match.  IP addresses are checked first.
+
+Port is mandatory for socks and webproxy modules and not used in others.
+It tells module what port it should connect to to do its work.
+
+If no host nor ip entry is specified, then the module will always be used.
+
+Reason is text to send to clients rejected by given module.
+
+When writing a configuration file, one should \fBalways\fP verify the
+syntax using the \fIiauth\fP program to avoid later problems.
+.SH IAUTH OPTIONS
+.TP
+.B timeout = <seconds>
+This allows to specify how much time each module has to complete its work
+for each connection.  This option can also be specified individually for
+each module.  The default is 30 seconds.
+.TP
+.B required
+By specifying this keyword, the IRC server is told not to accept new user
+connections unless the authentication is handled by \fIiauth\fP.  This does
+NOT mean that the server will wait forever to get the data from iauth, see
+the \fInotimeout\fP option.
+.TP
+.B notimeout
+By specifying this keyword, the IRC server is told not to accept a user
+connection if \fIiauth\fP hasn't finished its work in time. Note that
+modules specified after \fIdelayed\fP keyword are not considered.
+.TP
+.B extinfo
+This keyword allows extra information (user supplied username, and
+eventually password) to be received by \fIiauth\fP from the server.  This
+is only useful if a module using this information is loaded.
+.TP
+.B delayed
+All modules below this keyword will run in "delayed" execution mode. This
+means that ircd gets (fake) message that iauth is done with this client
+so that it allows it. Modules however do work as usual and upon deciding that this
+client should be removed, message is sent to ircd and client removed.
+.TP
+.B shared <name> <mod_name.so>
+If iauth was compiled with Dynamically Shared Module support, it can be
+told to dynamically load a module using this option.  The module can then
+be loaded.
+
+.SH MODULES
+.TP
+.B pipe
+This module is provided as a replacement to the (now obsolete) R
+configuration lines supported by the IRC daemon.  It runs an external
+program with the client IP and port as arguments.  The program should
+output either 'Y' (Yes, let the client in), or 'N' (No, don't let them
+in).
+
+Note that this module is quite expensive as it forks a separate process for
+each connection received by the IRC daemon.
+
+This module requires the following option:
+.B prog=/path/to/external/program
+.TP
+.B socks
+This module performs a basic check to verify that the host where the
+connection originated from doesn't run a SOCKS v4 or v5 proxy server on
+a given in configuration port that is open to the world. 
+It is useful to reject abusive clients using a relay to evade kill lines and bans.
+Multiple instances (with different ports) are allowed.
+
+This module understands ten options:
+.B reject
+to reject connections originating from a host where an open proxy
+was detected,
+.B log
+to log hostnames where an open proxy is detected.
+.B protocol
+to log protocol errors
+.B paranoid
+to consider proxies which deny the request because of a userid/ident
+mismatch to be OPEN proxies.
+.B megaparanoid
+which is paranoid plus it considers all proxies not explicitly stating they
+are closed to be OPEN proxies -- that includes all protocol errors, unexpected
+results etc.
+.B cache[=value]
+to set the cache lifetime in minutes.  By default, caching is enabled for
+30 minutes.  A value of 0 disables caching.
+.B careful
+to make sure socks v5 is properly configured with IP rulesets.  Without
+this parameter, module will not send additional query and assume first
+positive answer as valid.
+.B v4only
+to check only socks v4.
+.B v5only
+to check only socks v5.
+.TP
+.B rfc931
+This module is for authentication TCP connections using the protocol
+defined in RFC 1413 (which obsoletes RFC 931).  It is always loaded, and
+does not recognize the \fIhost\fP nor \fIip\fP fields.
+.TP
+.B lhex
+This module acts as a proxy, communicating with a LHEx server to perform
+authentication of client connections.  It takes a single (mandatory)
+option, which is the IP-address of the LHEx server to use.
+.TP
+.B webproxy
+This module performs a basic HTTP CONNECT to verify that the host where the
+connection originated from doesn't run an open WWW proxy.
+It is useful to reject abusive clients using a relay to evade kill lines and bans.
+Multiple instances (with different ports) are allowed.
+
+This module understands five options:
+.B reject
+to reject connections originating from a host where an open proxy was detected.
+.B log
+to log hostnames where an open proxy is detected.
+.B cache[=value]
+to set the cache lifetime in minutes.  By default, caching is enabled for
+30 minutes.  A value of 0 disables caching.
+.B careful
+to make sure that we connected to our own ircd; without
+this parameter, module will accept any "HTTP/1.? 200" with an exception
+of servers sending "Date:" header along (which is common with some
+Apache+PHP configurations).
+
+.SH EXAMPLE
+The following file will cause the IRC daemon to reject all connections
+originating from a system where an open proxy is running for hosts within
+*.fr and *.enserb.u-bordeaux.fr but not for other hosts matching
+*.u-bordeaux.fr.  For all connections, an ident lookup (RFC 1413) will be
+performed as well as checking for WWW proxy on port 8080 and 3128.
+In addition, every connection is authenticated with the LHEx
+server at IP-address 127.0.0.1. Client will be let in after ident and
+lhex are done but if socks or webproxy finds an open proxy, client will
+be removed asap.
+
+.RS
+.nf
+module rfc931
+
+module lhex
+        option = 127.0.0.1
+
+delayed
+
+module socks
+        option = reject,paranoid
+        host = *.enserb.u-bordeaux.fr
+        host = !*.u-bordeaux.fr 
+        host = *.fr            
+        port = 1080
+
+module webproxy
+        option = reject
+        port = 8080
+
+module webproxy
+        option = reject,careful
+        port = 3128
+
+.fi
+.RE
+.SH CAVEATS
+When the option
+.B extinfo
+is set, connections registering as a server or a service with the IRC
+server are not guaranteed to receive the "user" authentication provided by
+modules (such as the rfc931 module).
+.RE
+.SH COPYRIGHT
+(c) 1998,1999 Christophe Kalt
+.LP
+For full COPYRIGHT see LICENSE file with IRC package.
+.LP
+.RE
+.SH FILES
+"iauth.conf"
+.SH "SEE ALSO"
+iauth(8)
+.SH AUTHOR
+Christophe Kalt.

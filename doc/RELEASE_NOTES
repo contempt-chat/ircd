@@ -1,0 +1,337 @@
+# @(#)$Id: RELEASE_NOTES,v 1.84 2008/06/24 22:29:48 chopin Exp $
+
+This is version 2.11.2 of the IRC software.
+===============================================================================
+
+New features in 2.11.2:
+	* "KLINE" command (uses seperate file and is undoable other than manual
+	  edit of that file and rehash).
+	* MINLOCALNICKLEN to enforce minimum nick len used by local clients.
+	* "REHASH d" to reread resolv.conf
+	* "REHASH a" to restart iauth (to make it reread iauth.conf)
+	* standalone mode (ircd -p standalone) to avoid split mode for users 
+	  not linking any servers.
+	* ENABLE_CIDR_LIMITS (enabled by default) allows to limit client host
+	  counts in any CIDR size (per Y-line); useful for IPv6.
+	* opless channels can be joined by users matching +R, regardless of set
+	  channel limits (they still need (if applicable) proper +eI and key).
+	* X-lines got two more fields: one for matching nicks, another for
+	  limiting scope of X-line matching user host/ip mask.
+	* services can now have their distribution based on SID (it affects not
+	  only visibility, but also scope of information they get).
+	* new oper command "ETRACE": a hybrid between "STATS L" and "TRACE", also
+	  showing arguments used during registration; useful for bot hunting
+	  (requires ACL_TRACE oper priviledge).
+	* new oper command (if defined) "SIDTRACE": just like "ETRACE", but shows
+	  also remote clients from servers that share common SID prefix with us
+	  (requires new ACL_SIDTRACE oper priviledge).
+	* M4 passes INET6 define. If it's GNU variant, it also adds -I includedir.
+
+Important changes in 2.11.2 (since 2.11.1):
+	* &CLIENTS format is changed if XLINE is defined (sends first three
+	  parameters of client USER command before fourth one).
+	* MAXBANS increased to 64, TOPICLEN increased to 255.
+	* Y-line [user@]host limits are now counted against user IPs, not user
+	  hostnames. If you want old behaviour, undefine YLINE_LIMITS_IPHASH.
+	* &LOCAL unauth notices show ips now, not hostnames.
+	* res.c got fixed (hopefully this time for good).
+
+Important configuration changes in 2.11.2 (since 2.11.1):
+
+	* Y-line limits maxlinks behaviour is changed. Now all I-lines
+	  share the same maxlink if they are in the same class. If you
+	  want old behaviour, define YLINE_LIMITS_OLD_BEHAVIOUR.
+	* Y-lines can have yet another field for CIDR limits. Format: 13/24
+	  (means: 13 clients per each /24).
+	* X-lines got another field, so now it can match also on nicks
+	  given during registration.
+	* X-lines got yet another field, so now it can match also on user
+	  host/ip mask (narrowing the scope of X-line).
+	* S-lines need to be changed if used for TKLINE service: change type
+	  from 0x40000000 to 0x00100000. Service can KLINE now too (0x00200000).
+
+This is version 2.11.1 of the IRC software.
+===============================================================================
+
+New features in 2.11.1:
+
+	* It is possible to log server channels to a file.
+	* New configure option --with-rundir.
+	* It is possible to remove +r mode from a channel.
+	* Clients can use '~' char in nicknames.
+
+Important changes in 2.11.1 (since 2.11.0):
+
+	* TKLINE command defaults to minutes, not seconds.
+	* All restrictions were unlocked, that means clients can now:
+	  - use +R freely (when opped),
+	  - use longer nicks,
+	  - use [\]{|} chars in nicknames,
+	  - use {}~\ in channel names.
+
+Important configuration changes in 2.11.1 (since 2.11.0):
+
+	* It is possible to define two sendq values, one for burst and
+	  one for normal work.
+
+This is version 2.11.0 of the IRC software.
+===============================================================================
+
+New features in 2.11.0:
+	* New server-server protocol based on Unique IDs.
+	* When collision occurs, clients get their nicks forcefully changed
+	  to their UIDs. (Note: this requires no 2.10 server on the path
+	  between these two clients!)
+	* New channel list type: R (aka reop hints). With the same syntax and
+	  behaviour as beI, it serves as a hint list for reopping opless
+	  channels.
+	* CIDR support in +beIR channelmodes.
+	* New wildcard "#", matching any digit (note that if ban (in nick part)
+	  starts with digit, it will match on UID, if with '#', it will match
+	  on nickname).
+	* Clients can use "NICK 0" to get their UID as a nick. Works during
+	  registration, too.
+	* Channels now keep information of who and when set the topic.
+	* File resolv.conf can have IPv6 servers (this makes ircd fully IPv6).
+	* New "STATS P" to return listeners (removed from "STATS L").
+	* DELAY_CLOSE is default, this may use some extra fds.
+	* OPER_REMOTE is removed (and server behaves like it was defined).
+	* Resolving slightly changed: when host has CNAMEs, use the name that
+	  client IP PTR points to, not the CNAME that points to client IP.
+	* It is now possible to include files in config without need of m4.
+	* New "TKLINE timeformat user@host :reason" and "UNTKLINE user@host"
+	  commands, available for services and (depending on O: flag) opers.
+	  Timeformat is like 1w2d3h4m5s and defaults to minutes.
+	* New "REHASH t" removes all tklines.
+	* Oper-only (access granted via O: flag) &CLIENTS channel reporting
+	  (if defined) clients connects, quits, nickchanges.
+	* New config line X (for excluding users).
+	* "STATS k" (lower case k) returns list of tklines.
+	* New DelayedKill feature to make ircd more responsible on rehash
+	  on big servers with many clients and many klines.
+	* Reject reason sent to client can be specified in iauth.conf
+	* C:lines can have negative ports to disable autoconnects; these
+	  will be used when "CONNECT" with port "0" is used.
+	* Possibility of using port "0" in manual "CONNECT" (even remote); ircd
+	  will use port from ircd.conf.
+	* New "STATS ?" shows quick information about connected servers.
+	* New "STATS f" shows detailed information about client TCP connection
+	  (local opers only).
+	* New "SET" command, which makes possible to fine-tune certain ircd
+	  values during runtime (like dbuf poolsize, autoconnect and client
+	  accepting).
+	* New iauth module: mod_webproxy.
+	* Modules socks and webproxy can work on multiple different ports.
+	* New keyword "delayed" in iauth configuration (shortening time client
+	  waits for accepting).
+	* Services can request UIDs (or, rather, UNICKs).
+	* "LUSERS" shows local and global usercounts and maximums (new 265/266
+	  numerics).
+	* "USERS" defaults now to non-rfc1459 compatible variant (shows local
+	  and global usercounts and maximums (new 265/266 numerics).
+	* New command "MAP [*.mask] [s]" showing ascii tree version of LINKS
+	  and including (with "s" param) user counts and server versions.
+	* Oper-only &OPER channel (if defined, reporting tklines).
+	* Run time parameter -T (tune file) can be empty, no tune file will be
+	  used at all then.
+	* Burst includes empty channels (to be locked).
+
+Important changes in 2.11.0 (since 2.10.3):
+	* Nicknames of local clients cannot have [\]{|} chars. (Will be removed
+	  in 2.11.1).
+	* Channelnames created on 2.11.0 will have chars {}~\ in their name
+	  automatically converted to []^|. (Will be removed in 2.11.1).
+	* An irc client is no longer included.
+	* Class usage was moved from end of "TRACE" to "STATS Y".
+	* "DNS" command is now oper only.
+	* Redundant bans are allowed to be set.
+	* New server channel &WALLOPS.
+	* User mode +w is doing nothing: class usage is in "STATS Y" and
+	  wallops are sent to &WALLOPS.
+	* "REHASH d" (dns flush) instead of "REHASH q".
+	* Only "STATS K" (upper case K) returns list of klines.
+	* "LIST" (if allowed) does not disconnect if client's sendQ fills.
+	* "WHOIS" now shows the time user signed on.
+	* "INVITE" overriding ban shows inviter's n!u@h in channel notice.
+	* Support for text representation of user modes in USER command
+	  during registration.
+	* Operator broadcast message syntax has been changed: add one '$' in
+	  front (so NOTICE either $$*mask or $#*mask).
+	* Essential notices were moved from &LOCAL to &NOTICES
+	* Client's username and hostname are strictly checked for valid chars.
+	* "-t" runtime option (foreground mode) available without DEBUGMODE.
+	* "STATS Z" no longer computes real memory stats without DEBUGMODE.
+	* "STATS l" and "STATS L" show counts in Bytes, not KiBytes.
+	* "SERVICE" command has been changed slightly (removed 2nd (stok) and 5th
+	  (hopcount) parameters), please update your services.
+	* Format of log files has changed.
+	* Format of KILL logs (including syslog) has changed.
+	* Iauth prints errors to stderr and exits with code 1 if error.
+	* New config.h option to speed up accepting clients (costs CPU).
+	* Increasing poolsize is unlimited by default and it does not increase
+	  client sendq while at it.
+
+Important configuration changes between 2.10.x and 2.11.0:
+	* ircd.tune must be removed when upgrading from 2.10.x to 2.11.x
+	* M: has a new mandatory field: SID. Please read INSTALL.
+	* A: has a new field: "network name". 
+	* H: can have SID masks to accept.
+	* I: requires now both name field and addr field to match.
+	* I: has a new field: flags (D, E, e, F, I, M, N, R); read INSTALL.
+	* P: has a new field: flags ('D' (recommended) and 'S'); read INSTALL.
+	* C: has a new field: outgoing IP (useful for multihomed servers).
+	* O: has a new field: flags; read INSTALL for details.
+	  WARNING: no flags means no privileges at all!
+	* o: is deprecated (but still works), please use O: with 'L' flag.
+	* File names and layout changed a bit, be careful:
+	  - localstatedir defaults to $(prefix)/var (autoconf did that!)
+	  - logdir defaults to $(localstatedir)/log, not $(prefix)/var/log
+	  - ircd_var_dir (where .pid and .tune are kept) defaults to
+	    $(localstatedir)/run
+	  - log files are no longer in $(prefix)/var/log/ircd/, instead
+	    they are in $(logdir)
+	  - log file names changed from $(logdir)/{users,rejects,auth}
+	    to $(logdir)/ircd.{users,rejects,auth}
+	  - config and log file names depend on $(IRCD) name.
+	* Module socks no longer has default port, you must explicitly
+	  set "port = " in module configuration in iauth.conf.
+
+This is version 2.10.3 of the IRC software.
+===============================================================================
+
+Important changes in 2.10.3p4 (since 2.10.3p2):
+       * ip6.arpa is now default, with defining SIXBONE_HACK we
+         also recognize ip6.int
+       * RESTRICT_HOSTNAMES is default on, allowing client hosts in
+         conformance with RFC 1034, 1035, and 1123 (no '&', '*', '\' or
+         other "strange" characters)
+       * CLONE_CHECK default on, not SLOW_ACCEPT
+       * find_kill() is aware of '+' prefix, so no need to add another
+         K:line for it (or using *username)
+
+===============================================================================
+
+Important changes in 2.10.3p2 (since 2.10.3):
+	* u@h limits in Y:lines now default to 1.1, not 0.0
+	* WHO ** is not special anymore (may break clients depending on it)
+	* CIDR support in O:lines
+	* no need to use :ffff: mapped IPv4 addresses anymore
+	* now ircd reopens logfiles only upon HUP; this means it is not enough
+	  to remove (or rename) logfile to stop logging (but we gain a lot!)
+
+===============================================================================
+
+New features in 2.10.3:
+	* new options for iauth.conf to better control iauth behaviour
+	* iauth now supports dynamically shared modules.
+	* socks module now checks for both v4 and v5 of the SOCKS protocol.
+	* iauth has a new module: LHEx, see ftp://ftp.irc.org/irc/server/LHEx
+
+Important changes in 2.10.3 (since 2.10.2):
+	* default PATHs have changed, see INSTALL file and Makefile.
+	* V line code was fixed, and format slightly changed again.
+
+------
+
+Because of the many changes concerning iauth, it is recommended that this new
+version of the iauth program not be used with older version of the IRC daemon.
+
+===============================================================================
+
+Version 2.10.2 of the software adds support for IPv6.
+
+Important changes in 2.10.2 (since 2.10.1):
+	* iauth's socks module now uses an internal cache.
+	* iauth's socks module now checks for SOCKSv4 (rather than v5) proxies.
+
+===============================================================================
+
+2.10 uses a new (server-server) protocol.
+
+New features in 2.10.0:
+
+	* slave process handles authentication (ident lookups, ..).
+	* creation of a collision proof type of channels (prefix !).
+	* opless !channels may be reoped by the server (mode +r).
+	* added channel mode +e (EFnet's exceptions to bans).
+	* added channel mode +I (invitations).
+	* /invite can now be used to override channel bans & limit.
+	* away status is propagated again. (away messages are not).
+	* users need +o (or +v) to speak on a channel where they're banned.
+
+Important configuration changes between 2.9.x and 2.10.x:
+
+	* The V line format has changed!
+
+------
+
+If the irc daemon is unable to bind any socket to listen to for incoming
+connections, it will die rather than stay alive.
+
+===============================================================================
+
+New feature in 2.9.5:
+	* D lines created.
+
+------
+
+2.9.5 is taking steps to suppress the usage of the 2.9 JOIN
+format (:nickname JOIN #channel^Gov).  Future versions will
+not generate such joins anymore.  In order to make the
+transition smooth, it is imperative that all servers on the
+IRC network be upgraded to 2.9.5 when the JOIN syntax is
+abandonned.  Not doing so will result in a considerable
+increase of the amount of bandwidth used during netjoins.
+
+As a result, MIRC_KLUDGE is now defined by default in config.h
+
+------
+
+2.9.5 can be compiled on a W32 system using the Cygwin32
+library (http://www.cygnus.com/misc/gnu-win32/).
+
+===============================================================================
+
+2.9.4 doesn't support 2.8 links anymore.  A 2.8.x server cannot
+be directly linked to a 2.9.4 server.  They can however coexist
+on the same IRC network.
+
+------
+
+Configuration changes between 2.9.3 and 2.9.4:
+
+	* The format for I lines was extended.
+	* The format for B lines has slightly changed.
+	* The format for Y lines has changed ([user@]host limits).
+	* K lines on IP addresses now match resolving hosts by default.
+
+------
+
+As announced with the 2.9.3 release, the NOTE feature has been removed.
+A replacement has been written as an independant package, and can be found
+at the following location: ftp://ftp.cs.tu-berlin.de/pub/net/irc/noteserv/
+
+===============================================================================
+
+2.9.3 doesn't support 2.7 protocol anymore.  Don't run 2.9.3
+and 2.7 servers on the same IRC network.
+
+------
+
+New features in 2.9.3:
+
+	* compression of server links.
+	* virtual IP support.
+	* B lines created. (client redirection)
+	* k lines created. (OTHER ident)
+	* V lines created. (restrict peers' compile time options)
+	* new type of client: services.
+
+------
+
+Important configuration changes between 2.9.2 and 2.9.3:
+
+	* M and P lines format has changed since 2.9.2, it is important
+	  to update your ircd.conf !
+	* kill lines are now case sensitive (K: and k: are different)
+

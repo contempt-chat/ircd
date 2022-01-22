@@ -1,0 +1,191 @@
+.\" @(#)$Id ircd.8 2.0 (beta version) 29 Mar 1989 $
+.TH IRCD 8 "$Date: 2006/04/26 20:26:07 $"
+.SH NAME
+ircd \- The Internet Relay Chat Program Server 
+.SH SYNOPSIS
+.hy 0
+.IP \fBircd\fP
+[
+.B \-abciqst
+] [
+.BI \-f " configfile"
+] [
+.BI \-x " debuglevel"
+] [
+.BI \-h " hostname"
+] [
+.BI \-T 
+[ tunefile ]
+] [
+.BI \-p " mode"
+]
+.IP \fBircd\fP
+.B \-v
+.SH DESCRIPTION
+.LP
+\fIircd\fP is the server (daemon) program for the Internet Relay Chat
+Program.  The \fIircd\fP is a server in that its function is to "serve"
+the client program \fIirc(1)\fP with messages and commands.  All commands
+and user messages are passed directly to the \fIircd\fP for processing
+and relaying to other ircd sites.  The \fIirc(1)\fP program depends upon
+there being an \fIircd\fP server running somewhere (either on your local
+UNIX site or a remote ircd site) so that it will have somewhere to connect
+to and thus allow the user to begin talking to other users.
+
+\fIircd\fP will reread its configuration file whenever it received a hangup
+signal, SIGHUP.
+
+Sending an interrupt signal to \fIircd\fP process will cause it to restart.
+
+.SH OPTIONS
+.TP
+.B \-a
+Instructs the server to automatically die off if it loses all it's clients.
+.TP
+.B \-b
+If the ircd.tune file is corrupted, by default the server
+will not start.  This option will make the server start
+anyways, with the default values (ignoring the corrupted
+file).
+.TP
+.B \-c
+This flag must be given if you are running ircd from \fI/dev/console\fP or
+any other situation where fd 0 isnt a tty and you want the server to fork
+off and run in the background. This needs to be given if you are starting
+\fIircd\fP from an \fIrc\fP (such as \fI/etc/rc.local\fP) file.
+.TP
+.B \-i
+The server was started by inetd and it should start accepting connections
+from standard input. The following inetd.conf-line could be used to start
+up ircd automatically when needed:
+.TP
+.B
+ircd stream tcp wait irc /etc/ircd ircd \-i
+
+allows inetd to start up ircd on request.
+.TP
+.B \-q
+Using this option stops the server from doing DNS lookups on all the
+servers in your \fIircd.conf\fP file when it boots. This can take a lengthy
+amount of time if you have a large number of servers and they are not all
+close by.
+.TP
+.B \-s
+When this option is specified, \fIiauth\fP will not be
+started.  This means that the IRC daemon will perform "ident
+lookups" (RFC 1413) internally to attempt to authenticate
+incoming connections.  No other authentication mechanism
+will be used.
+.TP
+.B \-t
+Instructs the server to direct debugging output to standard output and to
+not fork nor detach from terminal.
+.TP
+.BI \-f " filename"
+Specifies the ircd.conf file to be used for this ircdaemon. The option
+is used to override the default ircd.conf given at compile time.
+.TP
+.BI \-x " #"
+Defines the debuglevel for ircd. The higher the debuglevel, the more stuff
+gets directed to debugging file (or standard output if -t option was used
+as well).
+.TP
+.BI \-h " hostname"
+Allows the user to manually set the server name at startup. The default
+name is hostname.domainname.
+.TP
+.BI \-p " mode"
+Specify whether the server should enable built-in
+protections against various type of user abuse that is
+commonly found on big public networks.  Possible modes are
+.BR strict " (default),"
+.BR on " and"
+.BR off " and"
+.BR standalone .
+The
+.B strict
+option enables the protections, and refuses to establish a
+link to a server not running with this option.  This is
+useful to force all servers on an IRC network to enable
+them.
+The
+.B standalone 
+option removes split checks and disallows any server to connect.
+.TP
+.BI \-T " tunefile"
+Specifies the ircd.tune file to be used for this ircdaemon. The option
+is used to override the default ircd.tune given at compile
+time. If no tune file is given, reading and writing of tune file is disabled.
+.TP
+.B \-v
+This option prevents the server from starting, and dumps
+some information about the version instead.
+.TP
+.SH
+If you plan to connect your \fIircd\fP server to an existing Irc-Network,
+you will need to alter your local IRC CONFIGURATION FILE (typically named
+"ircd.conf") so that it will accept and make connections to other \fIircd\fP
+servers.  This file contains the hostnames, Network Addresses, and sometimes
+passwords for connections to other ircds around the world.  Because 
+description of the actual file format of the "ircd.conf" file is beyond the
+scope of this document, please refer to the file INSTALL in the IRC source
+files documentation directory.
+.LP
+BOOTING THE SERVER:  The \fIircd\fP server can be started as part of the
+UNIX boot procedure or just by placing the server into Unix Background.
+Keep in mind that if it is *not* part of your UNIXES Boot-up procedure 
+then you will have to manually start the \fIircd\fP server each time your
+UNIX is rebooted.  This means if your UNIX is prone to crashing
+or going for for repairs a lot it would make sense to start the \fIircd\fP
+server as part of your UNIX bootup procedure.  In some cases the \fIirc(1)\fP
+will automatically attempt to boot the \fIircd\fP server if the user is
+on the SAME UNIX that the \fIircd\fP is supposed to be running on.  If the
+\fIirc(1)\fP cannot connect to the \fIircd\fP server it will try to start
+the server on it's own and will then try to reconnect to the newly booted
+\fIircd\fP server.
+.SH EXAMPLE
+.RS
+.nf
+tolsun% \fBircd\fP
+.fi
+.RE
+.LP
+Places \fIircd\fP into UNIX Background and starts up the server for use.
+Note:  You do not have to add the "&" to this command, the program will
+automatically detach itself from tty.
+.LP
+.RS
+.nf
+tolsun% \fBircd \-v\fP
+ircd 2.9.3 AaCDEfFHiIkMsu_V1
+        zlib not used
+        Tue Apr 1 1997 at 20:17:50 EDT #1
+.fi
+.RE
+.LP
+This indicates that this binary is the version 2.9.3 of the
+software.  AaCDEfFHiIkMsu_V1 are the compile time options
+which were used.  This binary does not support compression
+of server\-server links (does not use zlib) and was compiled
+on April the 1st.
+.SH COPYRIGHT
+(c) 1988,1989 University of Oulu, Computing Center, Finland,
+.LP
+(c) 1988,1989 Department of Information Processing Science,
+University of Oulu, Finland
+.LP
+(c) 1988,1989,1990,1991 Jarkko Oikarinen
+.LP
+For full COPYRIGHT see LICENSE file with IRC package.
+.LP
+.RE
+.SH FILES
+ "ircd.conf"
+.SH "SEE ALSO"
+iauth(8) irc(1) ircdwatch(8)
+.SH BUGS
+None... ;-) if somebody finds one, please send mail to ircd-bugs@irc.org
+.SH AUTHOR
+Jarkko Oikarinen, currently jto@tolsun.oulu.fi,
+manual page written by Jeff Trim, jtrim@orion.cair.du.edu,
+later modified by jto@tolsun.oulu.fi.

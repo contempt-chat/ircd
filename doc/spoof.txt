@@ -1,0 +1,117 @@
+######################################################################
+
+spoof - host spoofs/IP cloaks for irc2.11.2p3
+
+######################################################################
+
+I-line extended with an optional field for a spoofed hostname:
+
+ I:<TARGET Host Addr>:<Password>:<TARGET Hosts NAME>:<Port>:<Class>
+ :<Flags>:<Spoofed Host Name>:
+
+the real hostname is replaced with the spoofed hostname, the real IP
+address is replaced by 255.255.255.255 (SPOOF_IP), and the username
+is prefixed with '_' (SPOOF_IDENTCHAR)
+
+I-lines with spoofed host names are hidden from STATS I
+
+channel modes will match the real IP address
+
+spoofed hostnames can be (T)K-Lined directly
+
+config.h defines:
+
+ SPOOF (enabled by default)
+  enable/disable the spoof feature
+
+ SPOOF_NOTICE (enabled by default)
+  show a notice to spoofed clients on connect
+
+ SPOOF_WHOISCLOAKED (enabled by default)
+  show in (local) whois if a client is spoofed
+
+ SPOOF_STATSDEFINE (enabled by default)
+  show spoof-related defines in STATS d
+
+ SPOOF_WELCOME (disabled by default)
+  only show nickname for spoofed clients in RPL_WELCOME
+
+ SPOOF_WELCOME_ALL (disabled by default)
+  only show nickname for all clients in RPL_WELCOME
+
+ SPOOF_IP ("255.255.255.255" by default)
+  what to show instead of the real IP address of spoofed clients
+
+ SPOOF_IDENTCHAR ('_' by default)
+  which  character to prefix usernames with
+
+patches included:
+
+ passopts   v1.01 extended PASS options (see doc/passopts.txt)
+ passwdlen  v1.00 PASSWDLEN define (see doc/passwdlen.txt)
+ versionlen v1.00 VERSIONLEN define (see doc/versionlen.txt)
+ whoisextra v1.00 RPL_WHOISEXTRA numeric 320 (see doc/whoisextra.txt)
+
+######################################################################
+
+changelog:
+
+ v1.02
+
+ 2020-01-27 -- mh
+
+  * ircd/s_serv.c:m_sidtrace(): minor cleanup
+
+  * ircd/s_user.c:register_user() fixed bug that caused ip to show up
+    in realname due to not cleaning up after me :( -- mh (reported by
+    patrick)
+
+ v1.01
+
+ 2020-01-17 -- mh
+
+  * included patch versionlen v1.00 to replace hardcoded value
+
+  * POOF_PASSWDLEN extracted to its own patch passwdlen v1.00 and
+    included it
+
+ 2020-01-12 -- mh
+
+  * SPOOF_WELCOME and SPOOF_WELCOME_ALL config.h defines added. both
+    disabled by default. some clients will try to get their local
+    address by parsing the hostname in RPL_WELCOME. this will remove
+    the user@host part from RPL_WELCOME reply on connect for spoofed
+    clients (SPOOF_WELCOME), or for all clients (SPOOF_WELCOME_ALL),
+    and only show the nickname. the latter can be defined without
+    SPOOF defined and will override the former if that is defined.
+    the former can only be defined with SPOOF defined. added to STATS
+    d as S1.
+
+  * SPOOF_IP config.h define added. the IP address shown instead of
+    the real one (for example in /STATS L) for spoofed clients. this
+    defaults to "255.255.255.255".
+
+  * SPOOF_IDENTCHAR config.h define added. you can now define a
+    different character than the default '_' or disable using an
+    ident character entirely. it can be defined without SPOOF defined
+    to block using the character without supporting spoofs. added to
+    STATS d as SI
+
+ 2020-01-11 -- mh
+
+  * included patch whoisextra v1.00
+
+  * RPL_WHOISCLOAKED will use RPL_WHOISEXTRA if it is defined or fall
+    back to 320
+
+  * SPOOF_WHOISCLOAKED message changed to be more in line with the
+    320 used for SSL connections on eu.irc6.net
+
+  * PASSOPTS extracted to its own patch passopts v1.01 and included
+    it
+
+  * initial version based on passopts v1 (po+spoof) which is in turn
+    based on the ircd spoof patch by patrick at ircnet.com:
+    https://github.com/ircnet-com/misc/tree/master/ircd-spoof-patch
+
+######################################################################

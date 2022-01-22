@@ -1,0 +1,42 @@
+# @(#)$Id: README,v 1.9 2004/12/21 01:14:08 chopin Exp $
+
+This directory contains the documentation related to this package.
+
+
+
+The files relevant to the software compilation and configuration are:
+
+RELEASE_NOTES	- useful information for people upgrading from a previous
+		  version
+INSTALL.txt	- detailed information about compilation and configuration
+ircd.conf.example	- server configuration example file (useful complement
+		  	  to INSTALL)
+iauth.conf.example	- iauth configuration example
+
+
+
+Other files of interest:
+
+LICENSE		- license agreement
+ChangeLog	- log of source changes
+BUGS		- list of known bugs
+2.11-New	- transition documentation from 2.10 to 2.11 version
+2.10-New	- transition documentation from 2.9 to 2.10 version
+Etiquette	- IRC Etiquette
+ircd.8		- man page for the server
+iauth.8		- man page for iauth
+iauth.conf.5	- man page for the iauth.conf file
+Authors		- irc contributors
+Nets/		- documentation about various IRC networks
+Juped/		- old/obsolete documentation files
+alt-irc-faq	- alt.irc faq
+m4macros	- note on m4 macros for the server configuration file
+2.9-New		- old transition documentation from 2.8 to 2.9 version
+
+
+
+Related documents on the World Wide Web:
+
+		http://www.irc.org/tech_docs/ircnet/faq.html
+		http://www.irc.org/techie.html
+

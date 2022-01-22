@@ -1,0 +1,113 @@
+
+Most important changes in 2.11 server grouped by who most benefits from the
+feature or who should look at it more carefully.
+
+All:
+	* Nicknames cannot contain [|]{\} chars. (This restriction is
+	  removed since 2.11.1)
+	* Channel names cannot contain {\}~ chars. If used (or from remote),
+	  they will be changed to [|]^ accordingly. (This restriction is
+	  removed since 2.11.1)
+	* New channel list type: R (aka reop hints). With the same syntax and
+	  behaviour as beI, it serves as a hint list for reopping opless
+	  channels.
+	* Clients cannot set +R. (This restriction is removed since 2.11.1)
+	* CIDR support in +beIR channelmodes.
+	* +beIR channelmodes have new wildcard `#' matching any digit; note
+	  that if ban starts with digit, it will match on UID, if with '#',
+	  it will match on nickname.
+	* New stats k to show tklines (stats K shows klines).
+
+Client:
+	* When collision occurs, clients get their nicks forcefully changed
+	  to their UIDs. (Note: this requires no 2.10 server on the path
+	  between these two clients!)
+	* Clients can use "NICK 0" to get their UID as a nick. Works during
+	  registration, too, unless forbidden by admin.
+	* Channels now keep information who and when set the topic.
+	* LIST (if allowed) does not disconnect if client's sendQ fills.
+	* WHOIS now shows the time user signed on.
+	* LUSERS (and USERS, if defined) shows local and global usercount and
+	  maximums.
+	* INVITE overriding ban shows inviter's n!u@h in channel notice.
+	* Support for text representation of user modes in USER command
+	  during registration.
+
+Operator:
+	* New server to server protocol, based on Unique IDs
+	* Operator broadcast message syntax has been changed to:
+		$$*.mask - message all users matching given server mask
+		$#*.mask - message all users matching given hostname mask
+	* Essential notices were moved from &LOCAL to &NOTICES
+	* Possibility of using port "0" in manual CONNECTs (even remote);
+	  ircd will use port from ircd.conf
+	* Added DelayedKill feature to make ircd more responsible on rehash
+	  on big servers with many clients and many klines.
+	* New server channel &CLIENTS with clients connects, quits and nick
+	  changes (may be undefined during compilation).
+	* New command: TKLINE (syntax: TKLINE minutes user@host :reason),
+	  available for services and (depending on O-line flag) opers.
+
+Admin:
+	* File layout changed slightly:
+	  - localstatedir defaults to $(prefix)/var (autoconf did that!)
+	  - logdir defaults to $(localstatedir)/log, not $(prefix)/var/log
+	  - ircd_var_dir (where .pid and .tune are kept) defaults to
+	    $(localstatedir)/run
+	  - log files are no longer in $(prefix)/var/log/ircd/, instead
+	    they are in $(logdir)
+	  - log file names changed from $(logdir)/{users,rejects,auth}
+	    to $(logdir)/ircd.{users,rejects,auth}
+	  - config and log file names depend on $(IRCD) name.
+	* Ability to specify outgoing IP in C-line.
+	* I-line now requires both addr and name fields to match.
+	* I-line flags
+		D - restricted, when client has no reverse DNS.
+		E - client is exempted from K-lines.
+		e - client is exempted from X-lines.
+		F - fall-through to next I-line if password did not match.
+		I - restricted, when client has no ident.
+		N - disable resolved hostname to be used.
+		M - disable resolved hostname to be shown.
+		R - restricted.
+	* Reject reason sent to client can be specified in iauth.conf.
+	* Client's username and hostname are checked for valid chars.
+	* C-lines can have negative ports to disable autoconnects; these
+	  will be used when CONNECT with port "0" is used.
+	* STATS ? shows quick information about connected servers.
+	* STATS f, avaible to local operators only, shows detailed
+	  information about client TCP connection.
+	* -t option (foreground mode) is now avaible even without DEBUGMODE
+	* Added SET command which makes possible to fine-tune certain
+	  ircd values during runtime (like dbuf poolsize, autoconnect and client
+	  accepting).
+	* Stats Z no longer computes real memory statistics unless DEBUGMODE
+	  set.
+	* Stats l/L shows count in Bytes, not kBytes.
+	* SERVICE command changed, it uses SID now.
+	* O-line flags for better control
+		L - local operator (disables all remote functions)
+		P - removes penalty
+		p - allows flooding
+		& - allows joining &CLIENTS
+		A - enables all flags below
+		K - allows KILL (local and remote)
+		k - allows only local KILL
+		S - allows SQUIT (local and remote)
+		s - allows only local SQUIT
+		C - allows CONNECT (local and remote)
+		c - allows only local CONNECT
+		l - allows CLOSE
+		h - allows HAZH
+		d - allows DNS
+		r - allows REHASH
+		R - allows RESTART
+		D - allows DIE
+		e - allows SET
+		T - allows TKLINE
+		t - enables full TRACE and STATS L
+	* New config X-line.
+	* New module to iauth: mod_webproxy.
+	* socks and webproxy modules can connect to different ports.
+	* "delayed" execution mode for iauth.
+	* P-line flags
