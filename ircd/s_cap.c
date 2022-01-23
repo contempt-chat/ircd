@@ -22,7 +22,6 @@
 #include "os.h"
 #include "s_defines.h"
 #include "s_externs.h"
-#include "s_sasl_ext.h"
 
 struct Cap {
     const char *name;
@@ -170,7 +169,7 @@ int cap_end(aClient *cptr, aClient *sptr, char *arg) {
 
     if((sptr->sasl_service != NULL || sptr->sasl_auth_attempts > 0) && !IsSASLAuthed(sptr)) {
         // SASL authentication exchange has been aborted
-        return process_implicit_sasl_abort(sptr);
+        return process_implicit_sasl_abort(cptr, sptr);
     }
 
     cptr->cap_negotation = 0;

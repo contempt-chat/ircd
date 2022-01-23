@@ -24,5 +24,5 @@
 /*  External definitions for global functions.
  */
 #define EXTERN
-EXTERN int process_implicit_sasl_abort(aClient *sptr);
+EXTERN int process_implicit_sasl_abort(aClient *cptr, aClient *sptr);
 #undef EXTERN
