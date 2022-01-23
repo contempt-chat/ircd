@@ -209,7 +209,7 @@ void m_sasl_server(aClient *cptr, aClient *sptr, int parc, char *parv[]) {
  * Executed when the client aborted the SASL authentication exchange implicitly.
  * Example: the client sent "CAP END" before completing the authentication.
  */
-int process_implicit_sasl_abort(aClient *cptr, aClient *sptr) {
+int process_implicit_sasl_abort(aClient *sptr) {
     if (sptr->sasl_service != NULL) {
         // Inform the service that the authentication has been aborted
         sendto_service(sptr->sasl_service, "SASL %s %s D A", sptr->user->uid, sptr->sasl_service->name);
@@ -221,8 +221,8 @@ int process_implicit_sasl_abort(aClient *cptr, aClient *sptr) {
      * without authentication.
      */
     sptr->exitc = EXITC_SASL_REQUIRED;
-    exit_client(cptr, sptr, sptr, "SASL authentication failed");
-    return cptr == sptr ? FLUSH_BUFFER : 0;
+    exit_client(sptr, sptr, sptr, "SASL authentication failed");
+    return FLUSH_BUFFER;
 }
 
 /*
