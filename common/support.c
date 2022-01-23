@@ -790,11 +790,8 @@ dgetsreturnbuf:
 char	*make_version(void)
 {
 	int ve, re, mi, dv, pl;
-#ifdef VERSIONLEN
-	char ver[VERSIONLEN];
-#else
-	char ver[15];
-#endif
+	char ver[32];
+
 
 	sscanf(PATCHLEVEL, "%2d%2d%2d%2d%2d", &ve, &re, &mi, &dv, &pl);
 	/* version & revision */
