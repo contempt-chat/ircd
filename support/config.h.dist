@@ -925,6 +925,11 @@
 */
 #define ENABLE_SIDTRACE
 
+/*
+** Allows opers to use ENCAP command.
+ */
+#define OPER_ENCAP
+
 /*   STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP  */
 /* You shouldn't change anything below this line, unless absolutely needed. */
 
