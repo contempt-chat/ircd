@@ -25,30 +25,6 @@
 
 /************************************************************************
  *
- * confsplit
- *
- * Allow changing SS and SU values in ircd.conf on restart and optionally
- * on /REHASH. see doc/confsplit.txt for more information.
- *
- * CONFSPLIT
- *
- *  define to enable
- *
- * CONFSPLIT_REHASH
- *
- *  (only available if CONFSPLIT is defined)
- *
- *  define to allow ircd.conf values to be applied to a live server on
- *  /REHASH and not only at server startup
- *
- */
-
-#define CONFSPLIT
-#define CONFSPLIT_REHASH
-
-
-/************************************************************************
- *
  * whoisextra (see doc/whoisextra)
  *
  * WHOISEXTRA
@@ -541,7 +517,7 @@
  * If file is not absolute path, ircd etc path is prepended.
  * Note that "#include" must be at the beginning of the line.
  */ 
-#undef	CONFIG_DIRECTIVE_INCLUDE
+#define	CONFIG_DIRECTIVE_INCLUDE
 
 /*
  * If you wish to have the server send 'vital' messages about server
@@ -1130,11 +1106,6 @@
 /*   STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP  */
 /*   STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP  */
 /* ------------------------- END CONFIGURATION SECTION -------------------- */
-
-#ifndef CONFSPLIT
-/* we dont want this around if CONFSPLIT is not defined */
-#undef CONFSPLIT_REHASH
-#endif
 
 #ifdef SPOOF
 #ifdef FIND_USERHOST_IPHASH
