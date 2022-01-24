@@ -43,8 +43,8 @@
  *
  */
 
-/* #define CONFSPLIT */
-/* #define CONFSPLIT_REHASH */
+#define CONFSPLIT
+#define CONFSPLIT_REHASH
 
 
 /************************************************************************
