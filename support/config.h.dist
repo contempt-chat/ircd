@@ -470,7 +470,7 @@
  * A HUB Server has many servers connect to it at the same as opposed
  * to a leaf which just has 1 server (typically the uplink).
  */
-#undef	HUB
+#define	HUB
 
 #ifdef HUB
 /*
@@ -833,8 +833,8 @@
  *
  * Defining to 0 disables entering split-mode.
  */
-#define DEFAULT_SPLIT_USERS   20000
-#define DEFAULT_SPLIT_SERVERS 45
+#define DEFAULT_SPLIT_USERS   0
+#define DEFAULT_SPLIT_SERVERS 0
 
 #ifdef TEST0PN
 #undef DEFAULT_SPLIT_USERS
