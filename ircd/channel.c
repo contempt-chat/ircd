@@ -823,7 +823,7 @@ void	channel_modes(aClient *cptr, char *mbuf, char *pbuf, aChannel *chptr)
 		*mbuf++ = 'a';
 	if (chptr->mode.mode & MODE_QUIET)
 		*mbuf++ = 'q';
-	if (chptr->mode.mode & MODE_REOP)
+	if (chptr->mode.mode & MODE_NEEDSASLAUTH)
 		*mbuf++ = 'r';
 	if (chptr->mode.limit)
 	    {
@@ -1113,7 +1113,7 @@ static	int	set_mode(aClient *cptr, aClient *sptr, aChannel *chptr,
 				MODE_PRIVATE,    'p', MODE_SECRET,     's',
 				MODE_MODERATED,  'm', MODE_NOPRIVMSGS, 'n',
 				MODE_TOPICLIMIT, 't', MODE_INVITEONLY, 'i',
-				MODE_ANONYMOUS,  'a', MODE_REOP,       'r',
+				MODE_ANONYMOUS,  'a', MODE_NEEDSASLAUTH, 'r',
 				0x0, 0x0 };
 
 	Reg	Link	*lp = NULL;
@@ -1519,9 +1519,7 @@ static	int	set_mode(aClient *cptr, aClient *sptr, aChannel *chptr,
 						   ME, BadTo(sptr->name), chptr->chname);
 				else if (((*ip == MODE_ANONYMOUS &&
 					   whatt == MODE_ADD &&
-					   *chptr->chname == '#') ||
-					  (*ip == MODE_REOP && whatt == MODE_ADD &&
-					   *chptr->chname != '!')) &&
+					   *chptr->chname == '#')) &&
 					 !IsServer(sptr))
 					sendto_one(cptr,
 						   replies[ERR_UNKNOWNMODE],
@@ -2024,7 +2022,7 @@ static	int	can_join(aClient *sptr, aChannel *chptr, char *key)
 	if (*chptr->mode.key && (BadPtr(key) || mycmp(chptr->mode.key, key)))
 		return (ERR_BADCHANNELKEY);
 
-    if ((chptr->mode.mode & MODE_REOP) && !IsSASLAuthed(sptr))
+    if ((chptr->mode.mode & MODE_NEEDSASLAUTH) && !IsSASLAuthed(sptr))
     {
         return (ERR_NEEDSASLAUTH);
     }

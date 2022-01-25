@@ -788,7 +788,7 @@ struct Channel	{
 #define	MODE_QUIET	0x02000
 #define	MODE_EXCEPTION	0x04000
 #define	MODE_INVITE	0x08000
-#define	MODE_REOP	0x10000
+#define	MODE_NEEDSASLAUTH	0x10000
 #define	MODE_REOPLIST	0x20000
 #define	MODE_FLAGS	0x3ffff
 /*
