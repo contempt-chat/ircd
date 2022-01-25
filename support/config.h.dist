@@ -17,8 +17,6 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*#define TEST0PN*/
-
 #define SSL_PRIVKEY_PATH "/home/ircd/ssl/server.key"
 #define SSL_CERT_PATH    "/home/ircd/ssl/server.crt"
 
@@ -430,11 +428,6 @@
  */
 #define MAXCONNECTIONS 512
 
-#ifdef TEST0PN
-#undef MAXCONNECTIONS
-#define MAXCONNECTIONS 50
-#endif
-
 /* MAXIMUM LINKS
  *
  * This define is useful for leaf nodes and gateways. It keeps you from
@@ -595,10 +588,6 @@
  * ircd.conf file. See contrib/mkpasswd/README for more details on this.
  */
 #define CRYPT_OPER_PASSWORD
-
-#ifdef TEST0PN
-#undef CRYPT_OPER_PASSWORD
-#endif
 
 /*
  * If you want to store encrypted passwords in N-lines for server links,
@@ -835,13 +824,6 @@
  */
 #define DEFAULT_SPLIT_USERS   0
 #define DEFAULT_SPLIT_SERVERS 0
-
-#ifdef TEST0PN
-#undef DEFAULT_SPLIT_USERS
-#undef DEFAULT_SPLIT_SERVERS
-#define DEFAULT_SPLIT_USERS   0
-#define DEFAULT_SPLIT_SERVERS 0
-#endif
 
 /*
 ** Notice sent to connecting users if the server is in the split-mode.
@@ -1089,13 +1071,6 @@
 /* Minimum values admin can set. */
 #define SPLIT_USERS   0
 #define SPLIT_SERVERS 0
-
-#ifdef TEST0PN
-#undef SPLIT_USERS
-#undef SPLIT_SERVERS
-#define SPLIT_USERS   0
-#define SPLIT_SERVERS 0
-#endif
 
 /*
  ** Maximum SASL authentication attempts until the user gets disconnected.
