@@ -193,7 +193,7 @@ static	void	sendnum_toone(aClient *cptr, int wants, aClient *sptr,
 		umode = "+";
 
 	if ((wants & SERVICE_WANT_UID) && sptr->user)
-		sendto_one(cptr, ":%s UNICK %s %s %s %s %s %s :%s",
+		sendto_one(cptr, ":%s UNICK %s %s %s %s %s %s %s :%s",
 			sptr->user->servp->sid,
 			(wants & SERVICE_WANT_NICK) ? sptr->name : ".",
 			sptr->user->uid,
@@ -205,6 +205,7 @@ static	void	sendnum_toone(aClient *cptr, int wants, aClient *sptr,
 			(wants & SERVICE_WANT_USER) ? sptr->user->sip : ".",
 #endif
 			(wants & (SERVICE_WANT_UMODE|SERVICE_WANT_OPER)) ? umode : "+",
+			IsSASLAuthed(sptr) ? sptr->user->sasl_user : "*",
 			(wants & SERVICE_WANT_USER) ? sptr->info : "");
 	else
 	if (wants & SERVICE_WANT_EXTNICK)
