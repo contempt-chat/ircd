@@ -3913,7 +3913,7 @@ int	m_encap(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		/* Nothing of real interest here .. */
 		if (parc < 5 || strcmp(parv[2], "PARSE") || !encap_whitelisted(parv[4]))
 			return 0;
-	} else if (MyClient(cptr)  || MyService(cptr)) {
+	} else if (MyService(cptr)) {
 		/* For now .. hopefully is_allowed() will work for remote too, some day */
 		if (!is_allowed(sptr, ACL_ENCAP))
 			return m_nopriv(cptr, sptr, parc, parv);
