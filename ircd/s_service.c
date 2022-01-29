@@ -725,52 +725,23 @@ int	m_squery(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	    }
 
 	if ((acptr = best_service(parv[1], NULL)))
+	{
+        char tags[BUFSIZE];
+        create_service_message_tags(acptr, sptr, tags, BUFSIZE);
+
 		if (MyConnect(acptr) &&
 		    (acptr->service->wants & SERVICE_WANT_PREFIX))
-			sendto_one(acptr, ":%s!%s@%s SQUERY %s :%s", parv[0],
+			sendto_one(acptr, "%s:%s!%s@%s SQUERY %s :%s", tags, parv[0],
 				   sptr->user->username, sptr->user->host,
 				   acptr->name, parv[2]);
-		else if (MyConnect(acptr) && 
+		else if (MyConnect(acptr) &&
 			(acptr->service->wants & SERVICE_WANT_UID))
-			sendto_one(acptr, ":%s SQUERY %s :%s", sptr->user->uid,
+			sendto_one(acptr, "%s:%s SQUERY %s :%s", tags, sptr->user->uid,
 				   acptr->name, parv[2]);
-        else if (MyConnect(acptr) &&
-                 (acptr->service->wants & SERVICE_WANT_ACCOUNT_TAG || acptr->service->wants & SERVICE_WANT_UID_TAG))
-        {
-            char tags[BUFSIZE];
-            tags[0] = '\0';
-
-            if(acptr->service->wants & SERVICE_WANT_UID_TAG)
-            {
-                strncat(tags, "@uid=", BUFSIZE - strlen(tags) - 1);
-                strncat(tags, sptr->user->uid, BUFSIZE - strlen(tags) - 1);
-            }
-
-            if(acptr->service->wants & SERVICE_WANT_ACCOUNT_TAG && IsSASLAuthed(sptr))
-            {
-                if(tags[0] == '\0')
-                {
-                    strncat(tags, "@", BUFSIZE - strlen(tags) - 1);
-                }
-                else
-                {
-                    strncat(tags, ";", BUFSIZE - strlen(tags) - 1);
-                }
-
-                strncat(tags, "account=", BUFSIZE - strlen(tags) - 1);
-                strncat(tags, sptr->user->sasl_user, BUFSIZE - strlen(tags) - 1);
-            }
-
-            if(tags[0] != '\0') {
-                strncat(tags, " ", BUFSIZE - strlen(tags) - 1);
-            }
-
-            sendto_one(acptr, "%s:%s!%s@%s SQUERY %s :%s", tags, parv[0], sptr->user->username, sptr->user->host,
-                       acptr->name, parv[2]);
-        }
 		else
-			sendto_one(acptr, ":%s SQUERY %s :%s",
-				   parv[0], acptr->name, parv[2]);
+			sendto_one(acptr, "%s:%s SQUERY %s :%s",
+				   tags, parv[0], acptr->name, parv[2]);
+    }
 	else
 		sendto_one(sptr, replies[ERR_NOSUCHSERVICE], ME, BadTo(parv[0]), parv[1]);
 	return 2;
@@ -818,5 +789,39 @@ int	m_forcenick(aClient *cptr, aClient *sptr, int parc, char *parv[])
     if(IsServer(cptr) && !strcmp(acptr->name, parv[2]))
     {
         sendto_one(cptr, ":%s NICK :%s", acptr->user->uid, parv[2]);
+    }
+}
+
+void create_service_message_tags(aClient *service, aClient *client, char *tags, int len)
+{
+    tags[0] = '\0';
+
+    if (MyConnect(service) &&
+        (service->service->wants & SERVICE_WANT_ACCOUNT_TAG || service->service->wants & SERVICE_WANT_UID_TAG))
+    {
+        if(service->service->wants & SERVICE_WANT_UID_TAG)
+        {
+            strncat(tags, "@uid=", len - strlen(tags) - 1);
+            strncat(tags, client->user->uid, len - strlen(tags) - 1);
+        }
+
+        if(service->service->wants & SERVICE_WANT_ACCOUNT_TAG && IsSASLAuthed(client))
+        {
+            if(tags[0] == '\0')
+            {
+                strncat(tags, "@", len - strlen(tags) - 1);
+            }
+            else
+            {
+                strncat(tags, ";", len - strlen(tags) - 1);
+            }
+
+            strncat(tags, "account=", len - strlen(tags) - 1);
+            strncat(tags, client->user->sasl_user, len - strlen(tags) - 1);
+        }
+
+        if(tags[0] != '\0') {
+            strncat(tags, " ", len - strlen(tags) - 1);
+        }
     }
 }
