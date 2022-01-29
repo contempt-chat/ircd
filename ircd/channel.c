@@ -1074,13 +1074,6 @@ int	m_mode(aClient *cptr, aClient *sptr, int parc, char *parv[])
 			penalty += 1;
 			continue;
 		    }
-		if (!UseModes(name))
-		    {
-			sendto_one(sptr, replies[ERR_NOCHANMODES], ME, BadTo(parv[0]),
-				   name);
-			penalty += 1;
-			continue;
-		    }
 		if (parc < 3)	/* Only a query */
 		    {
 			*modebuf = *parabuf = '\0';
@@ -2827,8 +2820,6 @@ int	m_njoin(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		    {
 			if (!UseModes(parv[1]))
 			    {
-				sendto_one(cptr, replies[ERR_NOCHANMODES],
-							 ME, BadTo(parv[0]), parv[1]);
 				continue;
 			    }
 			switch (cnt)
@@ -3050,13 +3041,6 @@ int	m_kick(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		    }
 		if (check_channelmask(sptr, cptr, name))
 			continue;
-                if (!UseModes(name))
-                    {
-                        sendto_one(sptr, replies[ERR_NOCHANMODES], ME, BadTo(parv[0]),
-				   name);
-			penalty += 2;
-			continue;
-		    }
 		if (!IsServer(sptr) && !is_chan_op(sptr, chptr))
 		    {
 			if (!IsMember(sptr, chptr))
@@ -3171,8 +3155,8 @@ int	m_topic(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		}
 		if (!UseModes(name))
 		{
-			sendto_one(sptr, replies[ERR_NOCHANMODES], ME, 
-				parv[0], name);
+            sendto_one(sptr, replies[ERR_CHANOPRIVSNEEDED], ME,
+                       BadTo(parv[0]), name);
 			continue;
 		}
 		chptr = find_channel(name, NullChn);
