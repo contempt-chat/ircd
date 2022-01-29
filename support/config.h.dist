@@ -1020,7 +1020,7 @@
 ** If you don't want your users to have too short nicknames, define
 ** minimum nicklen allowed.
 */
-/* #define MINLOCALNICKLEN 2 */
+#define MINLOCALNICKLEN 2
 
 /*
 ** You probably don't want to disable it, but if you run into any problems,
