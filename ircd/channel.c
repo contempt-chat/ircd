@@ -2017,7 +2017,7 @@ static	int	can_join(aClient *sptr, aChannel *chptr, char *key)
 
     if ((chptr->mode.mode & MODE_NEEDSASLAUTH) && !IsSASLAuthed(sptr))
     {
-        return (ERR_NEEDSASLAUTH);
+        return (ERR_JOINNEEDSASLAUTH);
     }
 
 	if (chptr->mode.limit && (chptr->users >= chptr->mode.limit))

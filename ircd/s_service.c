@@ -32,6 +32,7 @@ static const volatile char rcsid[] = "@(#)$Id: s_service.c,v 1.69 2010/08/12 01:
 #undef S_SERVICE_C
 
 aService	*svctop = NULL;
+void create_service_message_tags(aClient *service, aClient *client, char *tags, int len);
 
 aService	*make_service(aClient *cptr)
 {

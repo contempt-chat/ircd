@@ -540,7 +540,7 @@ char *	replies[] = {
 /* 474 ERR_BANNEDFROMCHAN */	":%s 474 %s %s :Cannot join channel (+b)",
 /* 475 ERR_BADCHANNELKEY */	":%s 475 %s %s :Cannot join channel (+k)",
 /* 476 ERR_BADCHANMASK */	":%s 476 %s %s :Bad Channel Mask",
-/* 477 ERR_NEEDSASLAUTH */  ":%s 477 %s %s :Cannot join channel (+r) - you need to be authenticated with SASL", /*FIXME: good English? */
+/* 477 ERR_JOINNEEDSASLAUTH */  ":%s 477 %s %s :Cannot join channel (+r) - you need to be authenticated with SASL", /*FIXME: good English? */
 /* 478 ERR_BANLISTFULL */	":%s 478 %s %s %s!%s@%s :Channel list is full",
 /* 479 */ (char *)NULL,
 /* 480 */ (char *)NULL,
@@ -549,7 +549,7 @@ char *	replies[] = {
 /* 483 ERR_CANTKILLSERVER */	":%s 483 %s %s :You can't kill a server!",
 /* 484 ERR_RESTRICTED */	":%s 484 %s :Your connection is restricted!",
 /* 485 ERR_UNIQOPRIVSNEEDED */	":%s 485 %s :You're not the original channel operator",
-/* 486 */ (char *)NULL,
+/* 486 ERR_MSGNEEDSASLAUTH */ ":%s 486 %s %s :You need to be authenticated with SASL to message this user", /*FIXME: good English? */ // TODO: rename
 /* 487 */ (char *)NULL,
 /* 488 */ (char *)NULL,
 /* 489 */ (char *)NULL,

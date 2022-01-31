@@ -3918,22 +3918,6 @@ int	m_encap(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		if (!is_allowed(sptr, ACL_ENCAP))
 			return m_nopriv(cptr, sptr, parc, parv);
 
-		/* With great power comes great responsibility.
-		 * Avoid the usual typos in target mask which would match *.
-		 * Both for sid and tld.
-		 * This is not meant to protect from oper abuse - as it can be
-		 * easily circumvented, just genuine mistakes.
-		 */
-		if (IsPerson(sptr)) {
-			p = mask;
-			while (*p && (*p == '.' || *p =='*')) p++;
-			if (!*p || strlen(mask) <= 3) {
-				sendto_one(sptr, replies[ERR_WILDTOPLEVEL],
-					ME, BadTo(parv[0]), mask);
-				return 2;
-			}
-		}
-
 		/* Check that the command is whitelisted */
 		whitelisted = encap_whitelisted(parv[2]);
 		if (!whitelisted) {
