@@ -2012,13 +2012,16 @@ static	int	can_join(aClient *sptr, aChannel *chptr, char *key)
 	    && (lp == NULL))
 		return (ERR_INVITEONLYCHAN);
 
-	if (*chptr->mode.key && (BadPtr(key) || mycmp(chptr->mode.key, key)))
-		return (ERR_BADCHANNELKEY);
-
-    if ((chptr->mode.mode & MODE_NEEDSASLAUTH) && !IsSASLAuthed(sptr))
+    if ((chptr->mode.mode & MODE_NEEDSASLAUTH)
+        && !IsSASLAuthed(sptr)
+        && !match_modeid(CHFL_INVITE, sptr, chptr)
+        && (lp == NULL))
     {
         return (ERR_JOINNEEDSASLAUTH);
     }
+
+	if (*chptr->mode.key && (BadPtr(key) || mycmp(chptr->mode.key, key)))
+		return (ERR_BADCHANNELKEY);
 
 	if (chptr->mode.limit && (chptr->users >= chptr->mode.limit))
 	{
