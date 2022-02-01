@@ -3937,6 +3937,10 @@ int	m_encap(aClient *cptr, aClient *sptr, int parc, char *parv[])
             sendto_serv_v(cptr, SV_UID, "%s", buf);
         }
 	}
+	else
+    {
+	    return 0;
+    }
 
 	/* Target is either FQDN mask, such as *.cz or SID, like 0PN* */
 	if ((strchr(mask, '.') && match(mask, me.name) == 0) || match(mask, me.serv->sid) == 0) {
