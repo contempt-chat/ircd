@@ -144,6 +144,9 @@ aClient	*make_client(aClient *from)
         cptr->caps = 0;
         cptr->sasl_service = NULL;
         cptr->sasl_auth_attempts = 0;
+#ifdef SPOOF
+        cptr->cloak_tmp = NULL;
+#endif
 	    }
 	return (cptr);
 }
