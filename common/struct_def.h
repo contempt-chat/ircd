@@ -548,6 +548,7 @@ struct	Service	{
 	char	namebuf[HOSTLEN+1];
 	int	wants;
 	int	type;
+	int local_flags; /* flags that the service has on this ircd, e.g. to TKLINE remotely */
 	char	*server;
 	aServer	*servp;
 	struct	Service	*nexts, *prevs;
@@ -1098,8 +1099,7 @@ typedef struct
 #define ACL_TRACE		0x40000
 #define ACL_KLINE		0x80000
 #define ACL_SIDTRACE		0x100000
-#define ACL_ENCAP		0x200000
-#define ACL_HIDEIDLE		0x400000
+#define ACL_HIDEIDLE		0x200000
 
 #define ACL_ALL_REMOTE		(ACL_KILLREMOTE|ACL_SQUITREMOTE|ACL_CONNECTREMOTE)
 #define ACL_ALL			0x3FFFFF

@@ -60,6 +60,7 @@ EXTERN void send_umode (aClient *cptr, aClient *sptr, int old,
 EXTERN void send_umode_out (aClient *cptr, aClient *sptr, int old);
 EXTERN int m_save (aClient *cptr, aClient *sptr, int parc, char *parv[]);
 EXTERN int is_allowed(aClient *, long);
+EXTERN int is_service_allowed(aClient *, long);
 EXTERN char *oline_flags_to_string(long);
 EXTERN long oline_flags_parse(char *);
 EXTERN void send_away(aClient *, aClient *);

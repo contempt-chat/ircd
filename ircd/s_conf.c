@@ -285,8 +285,6 @@ char	*oline_flags_to_string(long flags)
 		*s++ ='D';
 	if (flags & ACL_SET)
 		*s++ ='e';
-	if (flags & ACL_ENCAP)
-		*s++ ='E';
 	if (flags & ACL_TKLINE)
 		*s++ ='T';
 	if (flags & ACL_KLINE)
@@ -341,7 +339,6 @@ long	oline_flags_parse(char *string)
 		case 'R': tmp |= ACL_RESTART; break;
 		case 'D': tmp |= ACL_DIE; break;
 		case 'e': tmp |= ACL_SET; break;
-		case 'E': tmp |= ACL_ENCAP; break;
 		case 'T': tmp |= ACL_TKLINE; break;
 		case 'q': tmp |= ACL_KLINE; break;
 #ifdef CLIENTS_CHANNEL
@@ -385,9 +382,6 @@ long	oline_flags_parse(char *string)
 #endif
 #ifndef OPER_SET
 	tmp &= ~ACL_SET;
-#endif
-#ifndef OPER_ENCAP
-	tmp &= ~ACL_ENCAP;
 #endif
 #ifndef OPER_TKLINE
 	tmp &= ~ACL_TKLINE;
@@ -2987,7 +2981,7 @@ badkline:
 #ifdef KLINE
 int	m_kline(aClient *cptr, aClient *sptr, int parc, char **parv)
 {
-	if (!is_allowed(sptr, ACL_KLINE))
+	if (!is_allowed(sptr, ACL_KLINE) && && !is_service_allowed(sptr, SERVICE_WANT_KLINE))
 		return m_nopriv(cptr, sptr, parc, parv);
 	return prep_kline(0, cptr, sptr, parc, parv);
 }
@@ -2996,7 +2990,7 @@ int	m_kline(aClient *cptr, aClient *sptr, int parc, char **parv)
 #ifdef TKLINE
 int	m_tkline(aClient *cptr, aClient *sptr, int parc, char **parv)
 {
-	if (!is_allowed(sptr, ACL_TKLINE))
+	if (!is_allowed(sptr, ACL_TKLINE) && !is_service_allowed(sptr, SERVICE_WANT_TKLINE))
 		return m_nopriv(cptr, sptr, parc, parv);
 	return prep_kline(1, cptr, sptr, parc, parv);
 }
@@ -3007,7 +3001,7 @@ int	m_untkline(aClient *cptr, aClient *sptr, int parc, char **parv)
 	char	*user, *host;
 	int	deleted = 0;
 	
-	if (!is_allowed(sptr, ACL_UNTKLINE))
+	if (!is_allowed(sptr, ACL_UNTKLINE) && !is_service_allowed(sptr, SERVICE_WANT_TKLINE))
 		return m_nopriv(cptr, sptr, parc, parv);
 
 	user = parv[1];

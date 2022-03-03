@@ -3537,24 +3537,12 @@ int	is_allowed(aClient *cptr, long function)
 {
 	Link	*tmp;
 
+    if (IsService(cptr))
+        return 0; // use is_service_allowed()
+
 	/* We cannot judge not our clients. Yet. */
 	if ((!MyConnect(cptr) && (IsAnOper(cptr)||IsService(cptr))) || IsServer(cptr))
 		return 1;
-
-	/* minimal control, but nothing else service can do anyway. */
-	if (IsService(cptr))
-	{
-		if ((function == ACL_TKLINE || function == ACL_UNTKLINE) &&
-			(cptr->service->wants & SERVICE_WANT_TKLINE))
-			return 1;
-		if (function == ACL_KLINE &&
-			(cptr->service->wants & SERVICE_WANT_KLINE))
-			return 1;
-        if (function == ACL_ENCAP &&
-            (cptr->service->wants & SERVICE_WANT_ENCAP))
-            return 1;
-		return 0;
-	}
 
 	for (tmp = cptr->confs; tmp; tmp = tmp->next)
 	{
@@ -3571,6 +3559,24 @@ int	is_allowed(aClient *cptr, long function)
 		return 1;
 
 	return 0;
+}
+
+/*
+** Checks if a local or remote service is allowed execute a function.
+** Return 1 for OK, 0 for forbidden.
+*/
+int	is_service_allowed(aClient *cptr, long function)
+{
+    if (!IsService(cptr)) {
+        return 0;
+    }
+
+    if(MyService(cptr)) {
+        return cptr->service->wants & function;
+    }
+    else {
+        return cptr->service->local_flags & function;
+    }
 }
 
 void send_away(aClient *sptr, aClient *acptr)

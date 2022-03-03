@@ -320,6 +320,21 @@ aConfItem	*find_conf_service(aClient *cptr, int type, aConfItem *aconf)
 	    }
 	return aconf;
 }
+
+aConfItem	*find_conf_service_by_name(char *name)
+{
+	Reg	aConfItem *tmp;
+
+	for (tmp = conf; tmp; tmp = tmp->next) {
+		if (!(tmp->status & CONF_SERVICE))
+			continue;
+
+		if (!mycmp(tmp->name, name))
+			return tmp;
+	}
+
+	return NULL;
+}
 #endif
 
 
@@ -504,6 +519,19 @@ int	m_service(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	if (strlen(info) > REALLEN) info[REALLEN] = '\0';
 	acptr->info = mystrdup(info);
 	svc->wants = 0;
+	svc->local_flags = 0;
+
+    if (IsServer(cptr))
+    {
+        // Check if the remote service matches an S-Line and give him the configured flags.
+        // This way we can allow certain services e.g. to TKLINE remotely on our server.
+        aconf = find_conf_service_by_name(acptr->name);
+
+        if(aconf != NULL) {
+            svc->local_flags = aconf->port;
+        }
+    }
+
 	svc->type = type;
 	reorder_client_in_list(acptr);
 	(void)add_to_client_hash_table(acptr->name, acptr);
@@ -553,7 +581,7 @@ int	m_servlist(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		     (match(mask, acptr->name) == 0))
 			sendto_one(sptr, replies[RPL_SERVLIST], ME, BadTo(parv[0]),
 				   acptr->name, sp->server, sp->dist,
-				   sp->type, acptr->hopcount, acptr->info);
+				   sp->type, sp->local_flags, acptr->hopcount, acptr->info);
 	sendto_one(sptr, replies[RPL_SERVLISTEND], ME, BadTo(parv[0]), mask, type);
 	return 2;
 }
