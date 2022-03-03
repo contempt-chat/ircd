@@ -616,6 +616,7 @@ int	m_servset(aClient *cptr, aClient *sptr, int parc, char *parv[])
 
 	/* check against configuration */
 	sptr->service->wants = strtol(parv[1], NULL, 0) & sptr->service->type;
+	sptr->service->local_flags = sptr->service->wants;
 	/* check that service is global for some requests */
 	if (strcmp(sptr->service->dist, "*"))
 		sptr->service->wants &= ~SERVICE_MASK_GLOBAL;
