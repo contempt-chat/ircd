@@ -8,4 +8,3 @@
 <br>
 
 * Hide idle time for opers (requested by doni)
-* Global &clients channel (requested by mxl)
