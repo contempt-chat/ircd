@@ -421,7 +421,7 @@
  * Maximum number of network connections your server will allow.  This must
  * not exceed OS limit of max. number of open file descriptors available upon
  * ircd start.
- * If you have a lot of server connections, it may be worth splitting the load
+ * If you have a lot of server connections, it may be worth ting the load
  * over 2 or more servers.
  * 1 server = 1 connection, 1 user = 1 connection.
  * Due to various sanity checks during startup, minimum is 13.
@@ -824,7 +824,7 @@
  * Defining to 0 disables entering split-mode.
  */
 #define DEFAULT_SPLIT_USERS   0
-#define DEFAULT_SPLIT_SERVERS 0
+#define DEFAULT_SPLIT_SERVERS 5
 
 /*
 ** Notice sent to connecting users if the server is in the split-mode.
@@ -1071,7 +1071,7 @@
 
 /* Minimum values admin can set. */
 #define SPLIT_USERS   0
-#define SPLIT_SERVERS 0
+#define SPLIT_SERVERS 5
 
 /*
  ** Maximum SASL authentication attempts until the user gets disconnected.
