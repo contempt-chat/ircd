@@ -1575,6 +1575,11 @@ static	int	set_sock_opts(int fd, aClient *cptr)
 		}
 	}
 #endif
+#if defined(IP_OPTIONS) && defined(IPPROTO_IP) && defined(INET6)
+    opt = 0;
+	if (SETSOCKOPT(fd, IPPROTO_IPV6, IPV6_V6ONLY, &opt, opt) < 0)
+		report_error("setsockopt(IPV6_V6ONLY) %s:%s", cptr);
+#endif
 	return ret;
 }
 
@@ -3165,7 +3170,8 @@ int	setup_ping(aConfItem *aconf)
 	    }
 	on = 0;
 	(void) SETSOCKOPT(udpfd, SOL_SOCKET, SO_BROADCAST, &on, on);
-	if (bind(udpfd, (SAP)&from, sizeof(from))==-1)
+    (void) SETSOCKOPT(udpfd, IPPROTO_IPV6, IPV6_V6ONLY, &on, on);
+    if (bind(udpfd, (SAP)&from, sizeof(from))==-1)
 	    {
 #ifdef	USE_SYSLOG
 		syslog(LOG_ERR, "bind udp.%d fd %d : %m",

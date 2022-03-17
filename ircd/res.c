@@ -118,13 +118,15 @@ int	init_resolver(int op)
 
 		ret = resfd = socket(AFINET, SOCK_DGRAM, 0);
 		(void) SETSOCKOPT(ret, SOL_SOCKET, SO_BROADCAST, &on, on);
+        (void) SETSOCKOPT(ret, IPPROTO_IPV6, IPV6_V6ONLY, &on, on);
 
-		/* The following frame is a hack to allow resolving
-		 * in FreeBSD jail(). As it is harmless elsewhere, it is
-		 * not #ifdef-ed.
-		 * Note that currently IPv6 within jail() is not
-		 * supported by the FreeBSD.
-		 */
+
+        /* The following frame is a hack to allow resolving
+         * in FreeBSD jail(). As it is harmless elsewhere, it is
+         * not #ifdef-ed.
+         * Note that currently IPv6 within jail() is not
+         * supported by the FreeBSD.
+         */
 		{
 			struct SOCKADDR_IN res_addr;
 
