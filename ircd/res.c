@@ -118,8 +118,9 @@ int	init_resolver(int op)
 
 		ret = resfd = socket(AFINET, SOCK_DGRAM, 0);
 		(void) SETSOCKOPT(ret, SOL_SOCKET, SO_BROADCAST, &on, on);
+#ifdef INET6
         (void) SETSOCKOPT(ret, IPPROTO_IPV6, IPV6_V6ONLY, &on, on);
-
+#endif
 
         /* The following frame is a hack to allow resolving
          * in FreeBSD jail(). As it is harmless elsewhere, it is

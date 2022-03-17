@@ -564,7 +564,10 @@ void	start_auth(aClient *cptr)
 	    }
 
 	set_non_blocking(cptr->authfd, cptr);
-
+#ifdef INET6
+    int opt = 0;
+	SETSOCKOPT(cptr->authfd, IPPROTO_IPV6, IPV6_V6ONLY, &opt, opt);
+#endif
 	/* get remote host peer - so that we get right interface -- jrg */
 	tlen = ulen = sizeof(us);
 	if (getpeername(cptr->fd, (struct sockaddr *)&them, &tlen) < 0)
