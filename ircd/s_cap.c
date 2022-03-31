@@ -28,6 +28,8 @@ struct Cap {
     const int flag;
 } cap_tab[] = {
         {"sasl",           CAP_SASL},
+        {"uid-tag",        CAP_UID_TAG},
+        {"account-tag",    CAP_ACCOUNT_TAG},
         {NULL,             0}
 };
 

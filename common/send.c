@@ -394,7 +394,9 @@ static	int	vsendpreprep(aClient *to, aClient *from, char *pattern, va_list va)
 
 		if (from == &anon || !mycmp(par, from->name))
 		{
-			len = sprintf(psendbuf, ":%s!%s@%s", from->name,
+            char tags[BUFSIZE];
+            create_message_tags(to, from, tags, BUFSIZE);
+			len = sprintf(psendbuf, "%s:%s!%s@%s", tags, from->name,
 				from->user->username, from->user->host);
 		}
 		else
@@ -1407,4 +1409,33 @@ void	sendto_flog(aClient *cptr, char msg, char *username, char *hostname)
 		linebuf[linebuflen-1] = '\n';
 		(void)write(logfile, linebuf, linebuflen);
 	}
+}
+
+void create_message_tags(aClient *to, aClient *from, char *tags, int len) {
+    tags[0] = '\0';
+
+    if (!MyConnect(to)) {
+        return;
+    }
+
+    if(HasCap(to, CAP_UID_TAG)) {
+        strncat(tags, "@uid=", len - strlen(tags) - 1);
+        strncat(tags, from->user->uid, len - strlen(tags) - 1);
+    }
+
+    if (HasCap(to, CAP_ACCOUNT_TAG) && IsSASLAuthed(from)) {
+        if (tags[0] == '\0') {
+            strncat(tags, "@", len - strlen(tags) - 1);
+        }
+        else {
+            strncat(tags, ";", len - strlen(tags) - 1);
+        }
+
+        strncat(tags, "account=", len - strlen(tags) - 1);
+        strncat(tags, from->user->sasl_user, len - strlen(tags) - 1);
+    }
+
+    if (tags[0] != '\0') {
+        strncat(tags, " ", len - strlen(tags) - 1);
+    }
 }
