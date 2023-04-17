@@ -525,11 +525,13 @@ int	m_service(aClient *cptr, aClient *sptr, int parc, char *parv[])
     {
         // Check if the remote service matches an S-Line and give him the configured flags.
         // This way we can allow certain services e.g. to TKLINE remotely on our server.
+#ifdef  USE_SERVICES
         aconf = find_conf_service_by_name(acptr->name);
 
         if(aconf != NULL) {
             svc->local_flags = aconf->port;
         }
+#endif
     }
 
 	svc->type = type;
