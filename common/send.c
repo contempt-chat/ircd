@@ -394,8 +394,8 @@ static	int	vsendpreprep(aClient *to, aClient *from, char *pattern, va_list va)
 
 		if (from == &anon || !mycmp(par, from->name))
 		{
-            char tags[BUFSIZE];
-            create_message_tags(to, from, tags, BUFSIZE);
+			char tags[BUFSIZE];
+			create_message_tags(to, from, tags, BUFSIZE);
 			len = sprintf(psendbuf, "%s:%s!%s@%s", tags, from->name,
 				from->user->username, from->user->host);
 		}
