@@ -2981,7 +2981,7 @@ badkline:
 #ifdef KLINE
 int	m_kline(aClient *cptr, aClient *sptr, int parc, char **parv)
 {
-	if (!is_allowed(sptr, ACL_KLINE) && && !is_service_allowed(sptr, SERVICE_WANT_KLINE))
+	if (!is_allowed(sptr, ACL_KLINE) && !is_service_allowed(sptr, SERVICE_WANT_KLINE))
 		return m_nopriv(cptr, sptr, parc, parv);
 	return prep_kline(0, cptr, sptr, parc, parv);
 }
