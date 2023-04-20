@@ -19,5 +19,5 @@
 #ifndef	PATCHLEVEL
 #define PATCHLEVEL "0211020003"		/* for server identification */
 #define DEVLEVEL 'a'
-#define VERSION_CONTEMPT "1.0.3"
+#define VERSION_CONTEMPT "1.0.4"
 #endif
