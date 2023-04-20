@@ -286,6 +286,7 @@
 #define RPL_VERSION          351
 
 #define RPL_WHOREPLY         352
+#define RPL_WHOSPCRPL        354
 #define RPL_ENDOFWHO         315
 #define RPL_NAMREPLY         353
 #define RPL_ENDOFNAMES       366
