@@ -1045,6 +1045,7 @@ typedef enum ServerChannels {
 
 // Capability flags
 #define CAP_SASL        	0x0001
+#define CAP_EXTENDED_JOIN   0x0002
 
 // WHO parameter flags
 #define WHO_FLAG_OPERS_ONLY     0x0001

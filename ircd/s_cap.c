@@ -28,6 +28,7 @@ struct Cap {
     const int flag;
 } cap_tab[] = {
         {"sasl",           CAP_SASL},
+        {"extended-join",  CAP_EXTENDED_JOIN},
         {NULL,             0}
 };
 
