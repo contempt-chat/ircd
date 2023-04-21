@@ -1852,7 +1852,7 @@ static	void	who_one(aClient *sptr, aClient *acptr, aChannel *repchan,
                                    MyClient(acptr) ? (long)(timeofday - acptr->user->last): 0);
         }
         if (opts->flags & WHO_FLAG_ACCOUNT) {
-            if (IsSASLAuthed(acptr) && acptr->user->sasl_user != NULL)
+            if (IsSASLAuthed(acptr))
             {
                 len += snprintf_append(buf, BUFSIZE, len, " %s", acptr->user->sasl_user);
             }
@@ -2303,7 +2303,7 @@ static	void	send_whois(aClient *sptr, aClient *acptr)
 	if (IsAnOper(acptr))
 		sendto_one(sptr, replies[RPL_WHOISOPERATOR], ME, BadTo(sptr->name), name);
 #ifdef SASL_WHOISLOGGEDIN
-    if (IsSASLAuthed(acptr) && acptr->user->sasl_user != NULL)
+    if (IsSASLAuthed(acptr))
     {
         sendto_one(sptr, replies[RPL_WHOISLOGGEDIN], ME, BadTo(sptr->name), name, acptr->user->sasl_user);
     }
