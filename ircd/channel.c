@@ -328,6 +328,47 @@ static	Link	*match_modeid(int type, aClient *cptr, aChannel *chptr)
 					/* We have match on UID!
 					 * Go now for the user part */
 				}
+                else if (tmp->value.alist->nick[0] == '$' && strlen(tmp->value.alist->nick) > 1)
+                {
+                    // Extban
+                    char extban_mode, *extban_param = NULL, *p = tmp->value.alist->nick;
+                    p++;
+                    extban_mode = *p;
+                    p++;
+
+                    if (*p == ':')
+                    {
+                        p++;
+
+                        if (*p != '\0')
+                        {
+                            extban_param = p;
+                        }
+                    }
+
+                    if (extban_mode == 'a')
+                    {
+                        if (extban_param != NULL)
+                        {
+                            // $a:someone!*@* - check if account matches
+                            if (IsSASLAuthed(cptr))
+                            {
+                                if (match(extban_param, cptr->user->sasl_user) != 0)
+                                {
+                                    continue;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // $a!*@* - check if authenticated with any account
+                            if (!IsSASLAuthed(cptr))
+                            {
+                                continue;
+                            }
+                        }
+                    }
+                }
 				else
 				{
 					/* no match on nick part */
