@@ -2,7 +2,6 @@
 This implementation is based on the documentation from Mantas Mikulėnas. Read *sasl_original.md* first.
 
 The following things are different:
-* the ircd does not store the login name
 * logout is not supported
 * abortion of authentication is not supported, the user has to disable SASL explicitly at his IRC client if he wants to connect without authentication
 * the L-message contains the cloak (`L <loginName> <cloak>`) and the ircd sets it after successful authentication
