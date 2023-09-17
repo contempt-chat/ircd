@@ -1261,7 +1261,7 @@ int	m_server_estab(aClient *cptr, char *sid, char *versionbuf)
 			sendto_one(cptr,
 					   ":%s UNICK %s %s %s %s %s %s %s :%s",
 					   acptr->user->servp->sid,
-					   acptr->name, acptr->user->uid,
+					   acptr->name, acptr->uid,
 					   acptr->user->username,
 					   acptr->user->host,
 #ifdef SPOOF
@@ -1270,7 +1270,7 @@ int	m_server_estab(aClient *cptr, char *sid, char *versionbuf)
 					   acptr->user->sip,
 #endif
 					   (*buf) ? buf : "+",
-                       IsSASLAuthed(acptr) ? acptr->user->sasl_user : "*",
+                       IsSASLAuthed(acptr) ? acptr->sasl_user : "*",
                        acptr->info);
 		    }
 		else if (IsService(acptr) &&
@@ -2650,7 +2650,7 @@ static	void	trace_one(aClient *sptr, aClient *acptr)
 	int class;
 	char *to;
 
-	/* to = #ST_UID#IsServer(acptr) && sptr->user ? sptr->user->uid : sptr->name; */
+	/* to = #ST_UID#IsServer(acptr) && sptr->user ? sptr->uid : sptr->name; */
 	to = sptr->name;
 	name = get_client_name(acptr, FALSE);
 	class = get_client_class(acptr);
@@ -2918,7 +2918,7 @@ int	m_sidtrace(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		if (!IsPerson(acptr))
 			continue;
 
-		if (strncmp(acptr->user->uid, me.serv->sid, SIDLEN-1))
+		if (strncmp(acptr->uid, me.serv->sid, SIDLEN-1))
 			continue;
 
 		sendto_one(sptr, replies[RPL_ETRACEFULL],

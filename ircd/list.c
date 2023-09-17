@@ -128,6 +128,9 @@ aClient	*make_client(aClient *from)
 		cptr->since = cptr->lasttime = cptr->firsttime = timeofday;
 		cptr->confs = NULL;
 		cptr->sockhost[0] = '\0';
+		cptr->uid[0] = '\0';
+		cptr->sasl_user = NULL;
+		cptr->uhnext = NULL;
 		cptr->buffer[0] = '\0';
 		cptr->authfd = -1;
 		cptr->auth = cptr->username;
@@ -183,6 +186,10 @@ void	free_client(aClient *cptr)
 		if (cptr->user3)
 			MyFree(cptr->user3);
 #endif
+		if(cptr->sasl_user)
+        {
+            MyFree(cptr->sasl_user);
+        }
 	}
 	MyFree(cptr);
 }
@@ -213,12 +220,8 @@ anUser	*make_user(aClient *cptr, int iplen)
 		user->invited = NULL;
 		user->uwas = NULL;
 		cptr->user = user;
-		user->hashv = 0;
-		user->uhnext = NULL;
-		user->uid[0] = '\0';
 		user->servp = NULL;
 		user->bcptr = cptr;
-        user->sasl_user = NULL;
 
 		if (cptr->next)	/* the only cptr->next == NULL is me */
 			istat.is_users++;
@@ -319,11 +322,6 @@ void	free_user(anUser *user)
 			istat.is_awaymem -= (strlen(user->away) + 1);
 			MyFree(user->away);
 		}
-
-		if(user->sasl_user)
-        {
-            MyFree(user->sasl_user);
-        }
 
 		MyFree(user);
 #ifdef	DEBUGMODE

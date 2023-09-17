@@ -186,6 +186,7 @@ typedef enum Status {
 #ifdef JAPANESE
 #define	FLAGS_JP	0x10000000 /* jp version, used both for chans and servs */
 #endif
+#define FLAGS_SASL  0x20000000	/* user is authenticated via SASL */
 	
 #define	FLAGS_OPER	0x0001 /* operator */
 #define	FLAGS_LOCOP	0x0002 /* local operator -- SRB */
@@ -207,9 +208,8 @@ typedef enum Status {
 #ifdef WHOISTLS
 #define FLAGS_TLS       0x0400 /* user is on a secure connection port (SSL/TLS) -- mh 2020-04-27 */
 #endif
-#define FLAGS_SASL  	0x0800	/* user is authenticated via SASL */
-#define FLAGS_HMODE     0x1000 /* oper is hiding his idletime */
-#define FLAGS_MSGNEEDSASLAUTH     0x2000 /* user accepts messages only from authenticated users */
+#define FLAGS_HMODE     0x0800 /* oper is hiding his idletime */
+#define FLAGS_MSGNEEDSASLAUTH     0x1000 /* user accepts messages only from authenticated users */
 
 #define	SEND_UMODES	(FLAGS_INVISIBLE|FLAGS_OPER|FLAGS_WALLOP|FLAGS_AWAY|FLAGS_RESTRICT|FLAGS_MSGNEEDSASLAUTH)
 #define	ALL_UMODES	(SEND_UMODES|FLAGS_LOCOP|FLAGS_HMODE)
@@ -294,7 +294,7 @@ typedef enum Status {
 #endif
 #define IsCAPNegotiation(x)  (MyConnect(x) && (x)->cap_negotation)
 #define HasCap(x, y)         (MyConnect(x) && (x)->caps & y)
-#define IsSASLAuthed(x)		 ((x)->user && (x)->user->flags & FLAGS_SASL)
+#define IsSASLAuthed(x)		 ((x)->flags & FLAGS_SASL)
 #define IsBlockedNonAuthMsg(from, to) (to->user->flags & FLAGS_MSGNEEDSASLAUTH) && IsPerson(from) \
                                     && !IsSASLAuthed(from) && !IsAnOper(from)
 /*
@@ -497,14 +497,10 @@ struct	User	{
 				** introduced... --msa
 				** I think it's not true anymore --Beeth
 				*/
-	u_int	hashv;
-	aClient	*uhnext;
 	aClient	*bcptr;
 	char	username[USERLEN+1];
-	char	uid[UIDLEN+1];
 	char	host[HOSTLEN+1];
 	char	*server;
-    char	*sasl_user; /* After successful login, the SASL user name will be stored here */
 
 	u_int	hhashv;		/* hostname hash value */
 	u_int	iphashv;	/* IP hash value */
@@ -571,6 +567,7 @@ struct Client	{
 	char	namebuf[NICKLEN+1]; /* nick of the client */
 	char	username[USERLEN+1]; /* username here now for auth stuff */
 	char	*info;		/* Free form additional client information */
+    char	uid[UIDLEN+1];
 	/*
 	** The following fields are allocated only for local clients
 	** (directly connected to *this* server with a socket.
@@ -622,6 +619,8 @@ struct Client	{
 #ifdef SPOOF
     char *cloak_tmp; /* Contains the cloaked hostname until it was set by attach_Iline() */
 #endif
+    aClient	*uhnext;
+    char	*sasl_user; /* After successful login, the SASL user name will be stored here */
 };
 
 #define	CLIENT_LOCAL_SIZE sizeof(aClient)

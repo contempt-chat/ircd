@@ -2720,7 +2720,7 @@ free_server:
 		(void)strcpy(cptr->serv->by, by->name);
 		if (by->user)
 		{
-			strcpy(cptr->serv->byuid, by->user->uid);
+			strcpy(cptr->serv->byuid, by->uid);
 		}
 		cptr->serv->user = by->user;
 		by->user->refcnt++;
