@@ -564,7 +564,7 @@ int	add_to_uid_hash_table(char *uid, aClient *cptr)
 {
 	Reg	u_int	hashv;
 
-	hashv = hash_uid(uid, &cptr->hashv);
+	hashv = hash_uid(uid, &cptr->uidhashv);
 	cptr->uhnext = (aClient *)uidTable[hashv].list;
 	uidTable[hashv].list = (void *)cptr;
 	uidTable[hashv].links++;
@@ -704,7 +704,7 @@ int	del_from_uid_hash_table(char *uid, aClient *cptr)
 	Reg	aClient	*tmp, *prev = NULL;
 	Reg	u_int	hashv;
 
-	hashv = cptr->hashv;
+	hashv = cptr->uidhashv;
 	hashv %= _UIDSIZE;
 	for (tmp = (aClient *)uidTable[hashv].list; tmp;
 	     tmp = tmp->uhnext)
@@ -979,7 +979,7 @@ aClient	*hash_find_uid(char *uid, aClient *cptr)
 	for (tmp = (aClient *)tmp3->list; tmp;
 	     prv = tmp, tmp = tmp->uhnext)
 	{
-		if (hv == tmp->hashv && mycmp(uid, tmp->uid) == 0)
+		if (hv == tmp->uidhashv && mycmp(uid, tmp->uid) == 0)
 		    {
 			uidhits++;
 			/*
