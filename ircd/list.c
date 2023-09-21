@@ -187,9 +187,9 @@ void	free_client(aClient *cptr)
 			MyFree(cptr->user3);
 #endif
 		if(cptr->sasl_user)
-        {
-            MyFree(cptr->sasl_user);
-        }
+		{
+			MyFree(cptr->sasl_user);
+		}
 	}
 	MyFree(cptr);
 }

@@ -345,7 +345,7 @@ void initanonymous(void)
 
 	memset(&anon, 0, sizeof(aClient));
 	anon.user = &ausr;
-    strcpy(anon.uid, "0ANONYM");
+	strcpy(anon.uid, "0ANONYM");
 	anon.from = &anon;
 	anon.fd = -2;
 	anon.status = STAT_CLIENT;
