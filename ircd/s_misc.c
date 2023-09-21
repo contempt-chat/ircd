@@ -489,7 +489,7 @@ int	exit_client(aClient *cptr, aClient *sptr, aClient *from,
 #  if (CLIENTS_CHANNEL_LEVEL & CCL_QUITINFO)
 				" :%s"
 #  endif
-				, sptr->user->uid, sptr->name,
+				, sptr->uid, sptr->name,
 				sptr->user->username, sptr->user->host,
 				sptr->exitc
 #  if (CLIENTS_CHANNEL_LEVEL & CCL_QUITINFO)
@@ -770,9 +770,9 @@ static	void	exit_one_client(aClient *cptr, aClient *sptr, aClient *from,
 	}
 	// We cannot use IsCAPNegotiation() because MyConnect() would return false
 	// because close_connection() was already executed in exit_client()
-	else if(!IsPerson(sptr) && cptr == sptr && sptr->cap_negotation && sptr->user && *sptr->user->uid) {
+	else if(!IsPerson(sptr) && cptr == sptr && sptr->cap_negotation && sptr->user && *sptr->uid) {
 	    // Someone who got an UID during SASL authentication but did not register
-        del_from_uid_hash_table(sptr->user->uid, sptr);
+        del_from_uid_hash_table(sptr->uid, sptr);
 	}
 	else if (!IsPerson(sptr) && !IsService(sptr))
 	{
@@ -794,7 +794,7 @@ static	void	exit_one_client(aClient *cptr, aClient *sptr, aClient *from,
 			if ((sptr->flags & FLAGS_SPLIT) == 0)
 			{
 				sendto_serv_butone(cptr, ":%s QUIT :%s",
-						   sptr->user->uid, comment);
+						   sptr->uid, comment);
 #ifdef	USE_SERVICES
 				check_services_butone(SERVICE_WANT_QUIT|
 						      SERVICE_WANT_RQUIT, 
@@ -818,7 +818,7 @@ static	void	exit_one_client(aClient *cptr, aClient *sptr, aClient *from,
 						if (acptr->flags & FLAGS_HIDDEN)
 							sendto_one(acptr,
 								":%s QUIT :%s",
-								sptr->user->uid,
+								sptr->uid,
 								comment);
 					}
 #ifdef	USE_SERVICES
@@ -915,7 +915,7 @@ static	void	exit_one_client(aClient *cptr, aClient *sptr, aClient *from,
 			/* remove from uid hash table */
 			if (sptr->user)
 			{
-				del_from_uid_hash_table(sptr->user->uid, sptr);
+				del_from_uid_hash_table(sptr->uid, sptr);
 			}
 
 			/* Add user to history */

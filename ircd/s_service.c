@@ -163,7 +163,7 @@ void	check_services_butone(long action, aServer *servp, aClient *cptr,
 				va_end(va);
 				if ((sp->wants & SERVICE_WANT_UID))
 					sendto_one(sp->bcptr, ":%s%s", 
-						cptr->user ? cptr->user->uid :
+						cptr->user ? cptr->uid :
 						cptr->name, buf);
 				else
 					sendto_one(sp->bcptr, ":%s!%s@%s%s",
@@ -197,7 +197,7 @@ static	void	sendnum_toone(aClient *cptr, int wants, aClient *sptr,
 		sendto_one(cptr, ":%s UNICK %s %s %s %s %s %s %s :%s",
 			sptr->user->servp->sid,
 			(wants & SERVICE_WANT_NICK) ? sptr->name : ".",
-			sptr->user->uid,
+			sptr->uid,
 			(wants & SERVICE_WANT_USER) ? sptr->user->username : ".",
 			(wants & SERVICE_WANT_USER) ? sptr->user->host : ".",
 #ifdef SPOOF
@@ -206,7 +206,7 @@ static	void	sendnum_toone(aClient *cptr, int wants, aClient *sptr,
 			(wants & SERVICE_WANT_USER) ? sptr->user->sip : ".",
 #endif
 			(wants & (SERVICE_WANT_UMODE|SERVICE_WANT_OPER)) ? umode : "+",
-			IsSASLAuthed(sptr) ? sptr->user->sasl_user : "*",
+			IsSASLAuthed(sptr) ? sptr->sasl_user : "*",
 			(wants & SERVICE_WANT_USER) ? sptr->info : "");
 	else
 	if (wants & SERVICE_WANT_EXTNICK)
@@ -768,7 +768,7 @@ int	m_squery(aClient *cptr, aClient *sptr, int parc, char *parv[])
 				   acptr->name, parv[2]);
 		else if (MyConnect(acptr) &&
 			(acptr->service->wants & SERVICE_WANT_UID))
-			sendto_one(acptr, "%s:%s SQUERY %s :%s", tags, sptr->user->uid,
+			sendto_one(acptr, "%s:%s SQUERY %s :%s", tags, sptr->uid,
 				   acptr->name, parv[2]);
 		else
 			sendto_one(acptr, "%s:%s SQUERY %s :%s",
@@ -820,7 +820,7 @@ int	m_forcenick(aClient *cptr, aClient *sptr, int parc, char *parv[])
     // inform the remote server about the nick change
     if(IsServer(cptr) && !strcmp(acptr->name, parv[2]))
     {
-        sendto_one(cptr, ":%s NICK :%s", acptr->user->uid, parv[2]);
+        sendto_one(cptr, ":%s NICK :%s", acptr->uid, parv[2]);
     }
 }
 
@@ -834,7 +834,7 @@ void create_service_message_tags(aClient *service, aClient *client, char *tags, 
         if(service->service->wants & SERVICE_WANT_UID_TAG)
         {
             strncat(tags, "@uid=", len - strlen(tags) - 1);
-            strncat(tags, client->user->uid, len - strlen(tags) - 1);
+            strncat(tags, client->uid, len - strlen(tags) - 1);
         }
 
         if(service->service->wants & SERVICE_WANT_ACCOUNT_TAG && IsSASLAuthed(client))
@@ -849,7 +849,7 @@ void create_service_message_tags(aClient *service, aClient *client, char *tags, 
             }
 
             strncat(tags, "account=", len - strlen(tags) - 1);
-            strncat(tags, client->user->sasl_user, len - strlen(tags) - 1);
+            strncat(tags, client->sasl_user, len - strlen(tags) - 1);
         }
 
         if(tags[0] != '\0') {

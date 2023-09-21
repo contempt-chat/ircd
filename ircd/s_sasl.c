@@ -52,18 +52,10 @@ int m_authenticate(aClient *cptr, aClient *sptr, int parc, char *parv[]) {
         return 0;
     }
 
-    if(!sptr->user) {
-        // According to the IRCv3 specifications a client must sent NICK/USER after CAP LS / CAP REQ.
-        // If we get here, we did not receive USER yet.
-        sptr->exitc = EXITC_SASL_REQUIRED;
-        exit_client(cptr, sptr, sptr, "Invalid IRCv3 implementation");
-        return cptr == sptr ? FLUSH_BUFFER : 0;
-    }
-
-    if(!*sptr->user->uid) {
+    if(!*sptr->uid) {
         // A unique identifier is required at this point. Allocate UID nick here and re-use it on registration.
-        strcpy(sptr->user->uid, next_uid());
-        add_to_uid_hash_table(sptr->user->uid, sptr);
+        strcpy(sptr->uid, next_uid());
+        add_to_uid_hash_table(sptr->uid, sptr);
     }
 
     if(!sptr->sasl_service)
@@ -78,12 +70,12 @@ int m_authenticate(aClient *cptr, aClient *sptr, int parc, char *parv[]) {
             return cptr == sptr ? FLUSH_BUFFER : 0;
         }
 
-        sendto_service(sptr->sasl_service, "SASL %s %s H %s", sptr->user->uid, sptr->sasl_service->name,
+        sendto_service(sptr->sasl_service, "SASL %s %s H %s", sptr->uid, sptr->sasl_service->name,
                        get_client_name(sptr, FALSE));
-        sendto_service(sptr->sasl_service, "SASL %s %s S %s", sptr->user->uid, sptr->sasl_service->name, parv[1]);
+        sendto_service(sptr->sasl_service, "SASL %s %s S %s", sptr->uid, sptr->sasl_service->name, parv[1]);
     }
     else {
-        sendto_service(sptr->sasl_service, "SASL %s %s C %s", sptr->user->uid, sptr->sasl_service->name, parv[1]);
+        sendto_service(sptr->sasl_service, "SASL %s %s C %s", sptr->uid, sptr->sasl_service->name, parv[1]);
     }
 
     return 0;
@@ -140,7 +132,7 @@ void m_sasl_service(aClient *cptr, aClient *sptr, int parc, char *parv[]) {
     }
     else if(*parv[3] == 'L') {
         // Login
-        acptr->user->sasl_user = mystrdup(parv[4]);
+        acptr->sasl_user = mystrdup(parv[4]);
         sendto_one(acptr, replies[RPL_LOGGEDIN], me.name, BadTo(acptr->name), parv[4]);
 
 #ifdef SPOOF
@@ -154,7 +146,7 @@ void m_sasl_service(aClient *cptr, aClient *sptr, int parc, char *parv[]) {
         // Authentication done
         if(*parv[4] == 'S') {
             // Authentication successful
-            acptr->user->flags |= FLAGS_SASL;
+            acptr->flags |= FLAGS_SASL;
             sendto_one(acptr, replies[RPL_SASLSUCCESS], me.name, BadTo(acptr->name));
         }
         else if(*parv[4] == 'F') {
@@ -212,7 +204,7 @@ void m_sasl_server(aClient *cptr, aClient *sptr, int parc, char *parv[]) {
 int process_implicit_sasl_abort(aClient *sptr) {
     if (sptr->sasl_service != NULL) {
         // Inform the service that the authentication has been aborted
-        sendto_service(sptr->sasl_service, "SASL %s %s D A", sptr->user->uid, sptr->sasl_service->name);
+        sendto_service(sptr->sasl_service, "SASL %s %s D A", sptr->uid, sptr->sasl_service->name);
     }
 
     /*

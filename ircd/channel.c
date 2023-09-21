@@ -320,7 +320,7 @@ static	Link	*match_modeid(int type, aClient *cptr, aChannel *chptr)
 				{
 					/* ...perhaps it is UID-ban? */
 					if (match(tmp->value.alist->nick, 
-						cptr->user->uid) != 0)
+						cptr->uid) != 0)
 					{
 						/* no match on UID */
 						continue;
@@ -353,7 +353,7 @@ static	Link	*match_modeid(int type, aClient *cptr, aChannel *chptr)
                             // $a:someone!*@* - check if account matches
                             if (IsSASLAuthed(cptr))
                             {
-                                if (match(extban_param, cptr->user->sasl_user) != 0)
+                                if (match(extban_param, cptr->sasl_user) != 0)
                                 {
                                     continue;
                                 }
@@ -1039,7 +1039,7 @@ void	send_channel_members(aClient *cptr, aChannel *chptr)
 	for (lp = chptr->members; lp; lp = lp->next)
 	    {
 		c2ptr = lp->value.cptr;
-		p = c2ptr->user ? c2ptr->user->uid : c2ptr->name;
+		p = c2ptr->user ? c2ptr->uid : c2ptr->name;
 		nlen = strlen(p);
 		if ((len + nlen) > (size_t) (BUFSIZE - 9)) /* ,@+ \r\n\0 */
 		    {
@@ -1726,19 +1726,19 @@ static	int	set_mode(aClient *cptr, aClient *sptr, aChannel *chptr,
 				c = 'o';
 				cp = lp->value.cptr->name;
 				ucp = lp->value.cptr->user ?
-					lp->value.cptr->user->uid : cp;
+					lp->value.cptr->uid : cp;
 				break;
 			case MODE_UNIQOP :
 				c = 'O';
 				cp = lp->value.cptr->name;
 				ucp = lp->value.cptr->user ?
-					lp->value.cptr->user->uid : cp;
+					lp->value.cptr->uid : cp;
 				break;
 			case MODE_VOICE :
 				c = 'v';
 				cp = lp->value.cptr->name;
 				ucp = lp->value.cptr->user ?
-					lp->value.cptr->user->uid : cp;
+					lp->value.cptr->uid : cp;
 				break;
 			case MODE_BAN :
 			case MODE_EXCEPTION :
@@ -1980,7 +1980,7 @@ static	int	set_mode(aClient *cptr, aClient *sptr, aChannel *chptr,
 		}
 		else if (sptr->user)
 		{
-			s = sptr->user->uid;
+			s = sptr->uid;
 		}
 		else
 		{
@@ -2385,7 +2385,7 @@ int	m_join(aClient *cptr, aClient *sptr, int parc, char *parv[])
 				remove_user_from_channel(sptr, chptr);
 			}
 			sendto_match_servs(NULL, cptr, ":%s JOIN 0 :%s",
-				sptr->user->uid, key ? key : parv[0]);
+				sptr->uid, key ? key : parv[0]);
 		}
 		else
 		{
@@ -2542,7 +2542,7 @@ int	m_join(aClient *cptr, aClient *sptr, int parc, char *parv[])
 				remove_user_from_channel(sptr, chptr);
 			}
 			sendto_match_servs(NULL, cptr, ":%s JOIN 0 :%s",
-				sptr->user->uid, key ? key : parv[0]);
+				sptr->uid, key ? key : parv[0]);
 			continue;
 		}
 
@@ -2616,7 +2616,7 @@ int	m_join(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		add_user_to_channel(chptr, sptr, flags);
 		/* Notify all users on the channel */
         sendto_channel_butserv_caps(chptr, sptr, CAP_EXTENDED_JOIN, 0, ":%s JOIN %s %s :%s",
-			parv[0], chptr->chname, IsSASLAuthed(sptr) ? sptr->user->sasl_user : "*", sptr->info);
+			parv[0], chptr->chname, IsSASLAuthed(sptr) ? sptr->sasl_user : "*", sptr->info);
         sendto_channel_butserv_caps(chptr, sptr, 0, CAP_EXTENDED_JOIN, ":%s JOIN :%s", parv[0], chptr->chname);
 		del_invite(sptr, chptr);
 		if (chptr->topic[0] != '\0')
@@ -2657,7 +2657,7 @@ int	m_join(aClient *cptr, aClient *sptr, int parc, char *parv[])
 				":%s NJOIN %s :%s%s", me.serv->sid, name,
 				flags & CHFL_UNIQOP ? "@@" : 
 				flags & CHFL_CHANOP ? "@" : "",
-				sptr->user ? sptr->user->uid : parv[0]);
+				sptr->user ? sptr->uid : parv[0]);
 		}
 		else if (*chptr->chname != '&')
 		{
@@ -2665,7 +2665,7 @@ int	m_join(aClient *cptr, aClient *sptr, int parc, char *parv[])
 				me.serv->sid, name,
 				flags & CHFL_UNIQOP ? "@@" : 
 				flags & CHFL_CHANOP ? "@" : "",
-				sptr->user ? sptr->user->uid : parv[0]);
+				sptr->user ? sptr->uid : parv[0]);
 		}
 	}
 	return 2;
@@ -2841,7 +2841,7 @@ int	m_njoin(aClient *cptr, aClient *sptr, int parc, char *parv[])
 			*u++ = *target;
 		}
 
-		target = acptr->user ? acptr->user->uid : acptr->name;
+		target = acptr->user ? acptr->uid : acptr->name;
 		while (*target)
 		{
 			*u++ = *target++;
@@ -3000,7 +3000,7 @@ int	m_part(aClient *cptr, aClient *sptr, int parc, char *parv[])
 					/* Anyway, if it would not fit in the
 					** buffer, send it right away. --B */
 					sendto_serv_butone(cptr, PartFmt,
-						sptr->user->uid, buf, comment);
+						sptr->uid, buf, comment);
 					*buf = '\0';
 				}
 				if (*buf)
@@ -3010,13 +3010,13 @@ int	m_part(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		}
 		else
 			sendto_match_servs(chptr, cptr, PartFmt,
-				   	   sptr->user->uid, name, comment);
+				   	   sptr->uid, name, comment);
 		sendto_channel_butserv(chptr, sptr, PartFmt,
 				       parv[0], chptr->chname, comment);
 		remove_user_from_channel(sptr, chptr);
 	}
 	if (*buf)
-		sendto_serv_butone(cptr, PartFmt, sptr->user->uid, buf, comment);
+		sendto_serv_butone(cptr, PartFmt, sptr->uid, buf, comment);
 	return 4;
 }
 
@@ -3058,7 +3058,7 @@ int	m_kick(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	}
 	else if (sptr->user)
 	{
-		sender = sptr->user->uid;
+		sender = sptr->uid;
 	}
 	else
 	{
@@ -3129,7 +3129,7 @@ int	m_kick(aClient *cptr, aClient *sptr, int parc, char *parv[])
 				{
 					strcat(nbuf, ",");
 				}
-				strcat(nbuf, who->user ? who->user->uid :
+				strcat(nbuf, who->user ? who->uid :
 					who->name);
 
 				/* kicking last one out may destroy chptr */
@@ -3255,7 +3255,7 @@ int	m_topic(aClient *cptr, aClient *sptr, int parc, char *parv[])
 			chptr->topic_t = timeofday;
 #endif
 			sendto_match_servs(chptr, cptr,":%s TOPIC %s :%s",
-					   sptr->user->uid, chptr->chname,
+					   sptr->uid, chptr->chname,
 					   chptr->topic);
 			sendto_channel_butserv(chptr, sptr, ":%s TOPIC %s :%s",
 					       parv[0],
