@@ -118,6 +118,7 @@ aClient	*make_client(aClient *from)
 	cptr->hnext = NULL;
 	cptr->user = NULL;
 	cptr->serv = NULL;
+    cptr->uhnext = NULL;
 	cptr->name = cptr->namebuf;
 	cptr->status = STAT_UNKNOWN;
 	cptr->fd = -1;
@@ -130,7 +131,6 @@ aClient	*make_client(aClient *from)
 		cptr->sockhost[0] = '\0';
 		cptr->uid[0] = '\0';
 		cptr->sasl_user = NULL;
-		cptr->uhnext = NULL;
 		cptr->buffer[0] = '\0';
 		cptr->authfd = -1;
 		cptr->auth = cptr->username;

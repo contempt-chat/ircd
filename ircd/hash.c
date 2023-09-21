@@ -998,7 +998,7 @@ aClient	*hash_find_uid(char *uid, aClient *cptr)
 
 				tmp2 = (aClient *)tmp3->list;
 				tmp3->list = (void *)tmp;
-				prv->uhnext = tmp->user->uhnext;
+				prv->uhnext = tmp->uhnext;
 				tmp->uhnext = tmp2;
 			    }
 #endif

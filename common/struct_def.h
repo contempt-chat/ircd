@@ -569,6 +569,7 @@ struct Client	{
 	char	*info;		/* Free form additional client information */
     char	uid[UIDLEN+1];
     u_int	uidhashv;   /* raw hash value of UID */
+    aClient	*uhnext;
 	/*
 	** The following fields are allocated only for local clients
 	** (directly connected to *this* server with a socket.
@@ -620,7 +621,6 @@ struct Client	{
 #ifdef SPOOF
     char *cloak_tmp; /* Contains the cloaked hostname until it was set by attach_Iline() */
 #endif
-    aClient	*uhnext;
     char	*sasl_user; /* After successful login, the SASL user name will be stored here */
 };
 
