@@ -1131,5 +1131,6 @@ typedef struct
 #define CCL_QUIT     0x04	/* quits */
 #define CCL_QUITINFO 0x08	/* if quits, then with quit message */
 #define CCL_NICK     0x10	/* nick changes */
+#define CCL_AUTH     0x20	/* if the user is SASL authenticated, show account name after CONN */
 #endif
 

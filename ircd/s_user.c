@@ -774,6 +774,13 @@ int	register_user(aClient *cptr, aClient *sptr, char *nick, char *username)
 			, sptr->info
 # endif
 			);
+# if (CLIENTS_CHANNEL_LEVEL & CCL_AUTH)
+		if(IsSASLAuthed(sptr))
+		{
+			sendto_flag(SCH_CLIENT, "%s %s %s %s AUTH %s", sptr->uid, nick, user->username, user->host,
+														   sptr->sasl_user);
+		}
+# endif
 #endif
 #ifdef SPOOF_WELCOME_ALL
 		/* only show nickname in RPL_WELCOME reply on connect for all clients -- mh 20200115*/
