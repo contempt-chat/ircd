@@ -967,7 +967,7 @@ char *	replies[] = {
 /* 897 */ (char *)NULL,
 /* 898 */ (char *)NULL,
 /* 899 */ (char *)NULL,
-/* 900 RPL_LOGGEDIN */		":%s 900 %s :You are now logged in as %s.",
+/* 900 RPL_LOGGEDIN */		":%s 900 %s %s!%s@%s %s :You are now logged in as %s.",
 /* 901 */ (char *)NULL,
 /* 902 */ (char *)NULL,
 /* 903 RPL_SASLSUCCESS */   ":%s 903 %s :SASL authentication successful",

@@ -133,15 +133,21 @@ void m_sasl_service(aClient *cptr, aClient *sptr, int parc, char *parv[]) {
     else if(*parv[3] == 'L') {
         // Login
         acptr->sasl_user = mystrdup(parv[4]);
-        sendto_one(acptr, replies[RPL_LOGGEDIN], me.name, BadTo(acptr->name), parv[4]);
-
 #ifdef SPOOF
         if (parc >= 6) {
             // Store cloaked hostname. It will finally be set by attach_Iline().
             acptr->cloak_tmp = mystrdup(parv[5]);
         }
 #endif
-    }
+		sendto_one(acptr, replies[RPL_LOGGEDIN], me.name, BadTo(acptr->name), BadTo(acptr->name),
+				   acptr->user ? acptr->user->username : "unknown",
+#ifdef SPOOF
+					acptr->cloak_tmp ? acptr->cloak_tmp : acptr->sockhost,
+#else
+					acptr->sockhost,
+#endif
+					parv[4], parv[4]);
+	}
     else if(*parv[3] == 'D') {
         // Authentication done
         if(*parv[4] == 'S') {
