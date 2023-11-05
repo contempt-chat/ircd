@@ -421,7 +421,7 @@
  * Maximum number of network connections your server will allow.  This must
  * not exceed OS limit of max. number of open file descriptors available upon
  * ircd start.
- * If you have a lot of server connections, it may be worth ting the load
+ * If you have a lot of server connections, it may be worth splitting the load
  * over 2 or more servers.
  * 1 server = 1 connection, 1 user = 1 connection.
  * Due to various sanity checks during startup, minimum is 13.
@@ -731,7 +731,7 @@
 ** CCL_QUITINFO (also quit reason), CCL_NICK (all nick changes).
 */
 /* #define CLIENTS_CHANNEL_LEVEL (CCL_CONN|CCL_QUIT) */
-#define CLIENTS_CHANNEL_LEVEL (CCL_CONN|CCL_QUIT|CCL_CONNINFO|CCL_QUITINFO)
+#define CLIENTS_CHANNEL_LEVEL (CCL_CONN|CCL_AUTH|CCL_QUIT|CCL_CONNINFO|CCL_QUITINFO)
 
 /*
 ** This adds ability to ban users with specified realnames from

@@ -454,10 +454,9 @@ static	void	bigger_hash_table(int *size, aHashEntry *table, int new)
 		uidsize = 0;
 		uidTable = table;
 		for (cptr = client; cptr; cptr = cptr->next)
-			if (cptr->user)
-				cptr->uhnext = NULL;
+			cptr->uhnext = NULL;
 		for (cptr = client; cptr; cptr = cptr->next)
-			if (cptr->user && cptr->uid[0])
+			if (cptr->uid[0])
 				add_to_uid_hash_table(cptr->uid, cptr);
 		MyFree(otab);
 	    }
