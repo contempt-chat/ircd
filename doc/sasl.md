@@ -6,6 +6,7 @@ The following things are different:
 * abortion of authentication is not supported, the user has to disable SASL explicitly at his IRC client if he wants to connect without authentication
 * the L-message contains the cloak (`L <loginName> <cloak>`) and the ircd sets it after successful authentication
 * the H-message contains a hostmask (`H <nick>[[ident]@ip]`)
+* additional N-message to allow the SASL service to send a NOTICE to a user (`N :<notice>`)
 * services as described in *SERVICE.txt* will be used
 
 You need to set up at least one service with the flags SERVICE_WANT_SASL and SERVICE_WANT_ENCAP.

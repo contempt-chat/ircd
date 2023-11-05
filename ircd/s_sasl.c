@@ -180,6 +180,10 @@ void m_sasl_service(aClient *cptr, aClient *sptr, int parc, char *parv[]) {
         // Supported mechanisms
         sendto_one(acptr, replies[RPL_SASLMECHS], me.name, BadTo(acptr->name), parv[4]);
     }
+	else if(*parv[3] == 'N') {
+		// NOTICE from SASL service to user
+		sendto_one(acptr, ":%s NOTICE %s :%s: %s", ME, BadTo(acptr->name), sptr->name, parv[4]);
+	}
 }
 
 /*
