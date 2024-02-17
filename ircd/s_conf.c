@@ -391,6 +391,56 @@ long	oline_flags_parse(char *string)
 #endif
 	return tmp;
 }
+
+/* Parse K:line flags from string.
+ * S - Matches only users that are not authenticated via SASL
+ * I - Matches only users that do not have ident
+ */
+long	kline_flags_parse(char *string) {
+	char *s;
+	int flags = 0;
+
+	for (s = string; *s; s++)
+	{
+		switch (*s)
+		{
+			case 'S':
+				flags |= KFLAG_SASL_EXCEPTION;
+				break;
+			case 'I':
+				flags |= KFLAG_IDENT_EXCEPTION;
+				break;
+			default:
+				return -1;
+		}
+	}
+
+	return flags;
+}
+
+/* convert K:line flags to human-readable string */
+char	*kline_flags_to_string(long flags) {
+	static char kfsbuf[BUFSIZE];
+	char *s = kfsbuf;
+
+	if (flags & KFLAG_SASL_EXCEPTION)
+	{
+		*s++ = 'S';
+	}
+	if (flags & KFLAG_IDENT_EXCEPTION)
+	{
+		*s++ = 'I';
+	}
+	if (s == kfsbuf)
+	{
+		*s++ = '-';
+	}
+
+	*s++ = '\0';
+
+	return kfsbuf;
+}
+
 /*
  * remove all conf entries from the client except those which match
  * the status field mask.
@@ -2117,7 +2167,13 @@ int 	initconf(int opt)
 				}
 			}
 		}
-		
+		if (aconf->status & (CONF_KILL|CONF_OTHERKILL))
+		{
+			if (tmp && *tmp)
+			{
+				aconf->flags = kline_flags_parse(tmp);
+			}
+		}
 		(void)collapse(aconf->host);
 		(void)collapse(aconf->name);
 		Debug((DEBUG_NOTICE,
@@ -2281,6 +2337,20 @@ findkline:
 		kconf;
 	for (; tmp; tmp = tmp->next)
 	{
+		if (tmp->flags == -1)
+		{
+			// Unparsable flags, K:Line will be ignored
+			continue;
+		}
+
+		if ((tmp->flags & KFLAG_SASL_EXCEPTION) && IsSASLAuthed(cptr))
+		{
+			continue;
+		}
+		if ((tmp->flags & KFLAG_IDENT_EXCEPTION) && (cptr->flags & FLAGS_GOTID))
+		{
+			continue;
+		}
 #ifdef TIMEDKLINES
 		if (timedklines && (BadPtr(tmp->passwd) || !isdigit(*tmp->passwd)))
 			continue;
@@ -2688,7 +2758,7 @@ int	wdhms2sec(char *input, time_t *output)
  *
  * Returns created tkline expire time.
  */
-void do_kline(int tkline, char *who, time_t time, char *user, char *host, char *reason, int status)
+void do_kline(int tkline, char *who, time_t time, char *user, char *host, char *reason, int status, int flags)
 {
 	char buff[BUFSIZE];
 	aClient	*acptr;
@@ -2718,6 +2788,7 @@ void do_kline(int tkline, char *who, time_t time, char *user, char *host, char *
 		DupString(aconf->name, BadTo(user));
 		DupString(aconf->host, BadTo(host));
 		DupString(aconf->passwd, reason);
+		aconf->flags = flags;
 		istat.is_confmem += strlen(aconf->name) + 1;
 		istat.is_confmem += strlen(aconf->host) + 1;
 		istat.is_confmem += strlen(aconf->passwd) + 1;
@@ -2750,6 +2821,14 @@ void do_kline(int tkline, char *who, time_t time, char *user, char *host, char *
 	{
 		if (!(acptr = local[i]) || !IsPerson(acptr)
 			|| IsKlineExempt(acptr))
+		{
+			continue;
+		}
+		if((aconf->flags & KFLAG_SASL_EXCEPTION) && IsSASLAuthed(acptr))
+		{
+			continue;
+		}
+		if((aconf->flags & KFLAG_IDENT_EXCEPTION) && (acptr->flags & FLAGS_GOTID))
 		{
 			continue;
 		}
@@ -2842,13 +2921,24 @@ int	prep_kline(int tkline, aClient *cptr, aClient *sptr, int parc, char **parv)
 {
 	int	status = tkline ? CONF_TKILL : CONF_KILL;
 	time_t	time;
-	char	*user, *host, *reason;
-	int	err = 0;
+	char	*user, *host, *reason, *timeformat, *s;
+	int	err = 0, flags = 0;
 
 	/* sanity checks */
 	if (tkline)
 	{
-		err = wdhms2sec(parv[1], &time);
+		timeformat = mystrdup(parv[1]);
+		if ((s = strchr(timeformat, '%')) != NULL)
+		{
+			*s = '\0';
+			s++;
+			flags = kline_flags_parse(s);
+		}
+		err = wdhms2sec(timeformat, &time);
+		if(flags == -1) {
+			err = 1;
+		}
+		free(timeformat);
 #ifdef TKLINE_MAXTIME
 		if (time > TKLINE_MAXTIME)
 			time = TKLINE_MAXTIME;
@@ -2972,7 +3062,7 @@ badkline:
 #endif /* KLINE */
 
 	/* All parameters are now sane. Do the stuff. */
-	do_kline(tkline, parv[0], time, user, host, reason, status);
+	do_kline(tkline, parv[0], time, user, host, reason, status, flags);
 
 	return 1;
 }
