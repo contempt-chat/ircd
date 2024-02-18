@@ -2774,6 +2774,7 @@ void do_kline(int tkline, char *who, time_t time, char *user, char *host, char *
 			0==strcasecmp(aconf->name, user))
 		{
 			aconf->hold = timeofday + time;
+			aconf->flags = flags;
 			break;
 		}
 	}
@@ -2964,8 +2965,9 @@ int	prep_kline(int tkline, aClient *cptr, aClient *sptr, int parc, char **parv)
 		*host++ = '\0';
 	}
 	if (!user || !host || *user == '\0' || *host == '\0' ||
-		(!strcmp("*", user) && !strcmp("*", host))) {
-		/* disallow all forms of bad u@h format and block *@* too */
+		(!strcmp("*", user) && !strcmp("*", host))
+			&& (flags & (KFLAG_SASL_EXCEPTION|KFLAG_IDENT_EXCEPTION)) == 0) {
+		/* disallow all forms of bad u@h format and block *@* without flags too */
 		err = 1;
 	}
 	if (!err && host && strchr(host, '/') && match_ipmask(host, sptr, 0) == -1)
