@@ -768,19 +768,17 @@ static	void	exit_one_client(aClient *cptr, aClient *sptr, aClient *from,
 		/* remove server from svrtop */
 		unregister_server(sptr);
 	}
-	// We cannot use IsCAPNegotiation() because MyConnect() would return false
-	// because close_connection() was already executed in exit_client()
-	else if(!IsPerson(sptr) && cptr == sptr && sptr->cap_negotation && *sptr->uid) {
-	    // Someone who got an UID during SASL authentication but did not register
-        del_from_uid_hash_table(sptr->uid, sptr);
-	}
 	else if (!IsPerson(sptr) && !IsService(sptr))
 	{
 				    /* ...this test is *dubious*, would need
 				    ** some thougth.. but for now it plugs a
 				    ** nasty hole in the server... --msa
 				    */
-		; /* Nothing */
+		// Check if it is a client that got an UID during CAP negotiation
+		if (cptr == sptr && sptr->uid[0])
+		{
+			del_from_uid_hash_table(sptr->uid, sptr);
+		}
 	}
 	else if (sptr->name[0] && !IsService(sptr)) /* clean with QUIT... */
 	{
