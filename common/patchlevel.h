@@ -19,5 +19,5 @@
 #ifndef	PATCHLEVEL
 #define PATCHLEVEL "0211030003"		/* for server identification */
 #define DEVLEVEL 'a'
-#define VERSION_CONTEMPT "1.0.6"
+#define VERSION_IRCNET2 "1.0.7"
 #endif

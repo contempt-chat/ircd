@@ -803,8 +803,8 @@ char	*make_version(void)
 		sprintf(ver + strlen(ver), "%c%d", DEVLEVEL, dv);
 	if (pl)	/* patchlevel */
 		sprintf(ver + strlen(ver), "p%d", pl);
-	strcat(ver, "+contempt-");
-	strcat(ver, VERSION_CONTEMPT);
+	strcat(ver, "+ircnet2-");
+	strcat(ver, VERSION_IRCNET2);
 	return mystrdup(ver);
 }
 
