@@ -426,7 +426,7 @@
  * 1 server = 1 connection, 1 user = 1 connection.
  * Due to various sanity checks during startup, minimum is 13.
  */
-#define MAXCONNECTIONS 512
+#define MAXCONNECTIONS 4096
 
 /* MAXIMUM LINKS
  *
