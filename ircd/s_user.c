@@ -832,14 +832,12 @@ int	register_user(aClient *cptr, aClient *sptr, char *nick, char *username)
 			sendto_one(sptr, ":%s NOTICE %s :%s", ME, nick, WHOISTLS_NOTICE);
 		}
 #endif
-#ifdef SPOOF_NOTICE
 		/* send a notice to client if the connection is spoofed.
 		 * notice is defined as SPOOF_NOTICE in config.h -- mh 20191230 */
 		if (IsSpoofed(sptr))
 		{
 			sendto_one(sptr, ":%s NOTICE %s :%s", ME, nick, SPOOF_NOTICE);
 		}
-#endif
 		if (IsConfNoResolve(sptr->confs->value.aconf))
 		{
 			sendto_one(sptr, ":%s NOTICE %s :Due to an administrative"
