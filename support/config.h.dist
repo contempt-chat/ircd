@@ -122,19 +122,6 @@
 
 /************************************************************************
  *
- * passopts (see doc/passopts.txt)
- *
- * PASSOPTS
- *
- *  undefine to disable support for extended PASS options v1
- *
- */
-
-#define PASSOPTS
-
-
-/************************************************************************
- *
  * versionlen (see doc/versionlen.txt)
  *
  * VERSIONLEN will override the default ircd version string length limit
