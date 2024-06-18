@@ -601,14 +601,6 @@ int	attach_Iline(aClient *cptr, struct hostent *hp, char *sockhost)
 			/* Try another I:line. */
 			continue;
 		}
-#ifdef PASSOPTS
-		/* try another I-line if client password is required to match
-		 * I-line password, and I-line does not have one -- mh 20200102 */
-		if (IsReqPass(cptr) && BadPtr(aconf->passwd))
-		{
-			continue;
-		}
-#endif
 
 		/* If anything in aconf->name... */
 		if (*aconf->name)
@@ -737,15 +729,6 @@ int	attach_Iline(aClient *cptr, struct hostent *hp, char *sockhost)
 	}
 	if (retval == -2)
 	{
-#ifdef PASSOPTS
-		if (IsReqPass(cptr))
-		{
-			/* client requested password to match but no I-line passwords did */
-			sendto_one(cptr, replies[ERR_PASSWDMISMATCH], ME, BadTo(cptr->name));
-			retval = -8; /* EXITC_BADPASS */
-			return retval;
-		}
-#endif
 		find_bounce(cptr, 0, -2);
 	}
 	return retval;

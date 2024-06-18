@@ -201,10 +201,6 @@ typedef enum Status {
 #ifdef XLINE
 #define FLAGS_XLINED	0x0100	/* X-lined client */
 #endif
-#ifdef PASSOPTS
-#define FLAGS_REQPASS   0x0200 /* require the given password match an I-line password to connect -- mh 20200102 */
-#define POFLAG_REQPASS  0x01   /* passopts flag to require password to match and be present in I-line -- mh 20200111 */
-#endif
 #ifdef WHOISTLS
 #define FLAGS_TLS       0x0400 /* user is on a secure connection port (SSL/TLS) -- mh 2020-04-27 */
 #endif
@@ -283,10 +279,6 @@ typedef enum Status {
 #ifdef SPOOF
 #define IsSpoofed(x)        ((x)->user && (x)->user->flags & FLAGS_SPOOFED)
 #define SetSpoofed(x)       ((x)->user->flags |= FLAGS_SPOOFED)
-#endif
-#ifdef PASSOPTS
-#define IsReqPass(x)    ((x)->user && (x)->user->flags & FLAGS_REQPASS)
-#define SetReqPass(x)   ((x)->user->flags |= FLAGS_REQPASS)
 #endif
 #ifdef WHOISTLS
 #define IsTLS(x)        ((x)->user && (x)->user->flags & FLAGS_TLS)

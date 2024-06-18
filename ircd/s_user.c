@@ -2490,9 +2490,6 @@ int	m_user(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	char	ipbuf[BUFSIZE];
 	int	what,i;
 	char 	*s;
-#ifdef PASSOPTS
-	Reg char *passopts; /* password options set in extended PASS argument -- mh 20200102 */
-#endif
 
 	if (MyConnect(cptr) && IsUnknown(cptr) &&
 		IsConfServeronly(cptr->acpt->confs->value.aconf))
@@ -2596,39 +2593,7 @@ int	m_user(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	
 	reorder_client_in_list(sptr);
 	if (sptr->info != DefInfo)
-#ifdef PASSOPTS
-	{
-		/* if we have extended PASS arguments, attempt to parse them. -- mh 20200102 */
-		/* see doc/passopts.txt for more information -- mh 20200112 */
-
-		/* do we need to check if sptr->info is NULL first? i dont think so -- mh 20200102 */
-		if (strlen(sptr->info) > 0)
-		{
-			/* extended PASS arguments found */
-			for (s = passopts = strtoken(&s, sptr->info, " "); *s; s++)
-			{
-				if (!isdigit(*s))
-				{
-					/* passopts must be numeric only */
-					break;
-				}
-			}
-			if (*s == '\0')
-			{
-				/* passopts valid, parse it */
-				i = atoi(passopts); /* overflow checking needed? -- mh 20200102 */
-				if (POFLAG_REQPASS & i)
-				{
-					/* password required to match I-line password */
-					SetReqPass(sptr);
-				}
-			}
-		}
 		MyFree(sptr->info);
-	}
-#else
-		MyFree(sptr->info);
-#endif
 	if (strlen(realname) > REALLEN)
 		realname[REALLEN] = '\0';
 	sptr->info = mystrdup(realname);
