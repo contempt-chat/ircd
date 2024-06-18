@@ -353,15 +353,14 @@ void	send_defines(aClient *cptr, char *nick, char *extend)
 	 * spoof       1 if SPOOF is defined, othewise 0
 	 * welcome     2 if SPOOF_WELCOME_ALL is defined, 1 if SPOOF_WELCOME is defined, otherwise 0
 	 * notice      1 if SPOOF_NOTICE is defined, otherwise 0
-	 * whois       1 if SPOOF_WHOISCLOAKED is defined, otherwise 0
 	 * identchar   0 if SPOOF_IDENTCHAR is not defined, otherwise SPOOF_IDENTCHAR character singe-quoted
 	 * passopts    1 if PASSOPTS is defined, otherwise 0
 	 *
 	 */
 #ifdef SPOOF_IDENTCHAR
-	sendto_one(cptr, ":%s %d %s :SP:%d S1:%d SN:%d SW:%d SI:'%c' PO:%d", ME, RPL_STATSDEFINE, nick,
+	sendto_one(cptr, ":%s %d %s :SP:%d S1:%d SN:%d SI:'%c' PO:%d", ME, RPL_STATSDEFINE, nick,
 #else
-	sendto_one(cptr, ":%s %d %s :SP:%d S1:%d SN:%d SW:%d SI:%d PO:%d", ME, RPL_STATSDEFINE, nick,
+	sendto_one(cptr, ":%s %d %s :SP:%d S1:%d SN:%d SI:%d PO:%d", ME, RPL_STATSDEFINE, nick,
 #endif
 #ifdef SPOOF
 		1,
@@ -378,11 +377,6 @@ void	send_defines(aClient *cptr, char *nick, char *extend)
 #endif
 #endif
 #ifdef SPOOF_NOTICE
-		1,
-#else
-		0,
-#endif
-#ifdef SPOOF_WHOISCLOAKED
 		1,
 #else
 		0,

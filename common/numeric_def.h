@@ -245,13 +245,7 @@
 #define RPL_WHOISLOGGEDIN    330
 #endif
 
-#ifdef SPOOF_WHOISCLOAKED
-#ifdef RPL_WHOISEXTRA
-#define RPL_WHOISCLOAKED     RPL_WHOISEXTRA
-#else
 #define RPL_WHOISCLOAKED     320 /* client is cloaked/spoofed - non-standard use of 320 -- mh 20191230 */
-#endif
-#endif
 
 #ifdef WHOISTLS
 #ifdef RPL_WHOISEXTRA

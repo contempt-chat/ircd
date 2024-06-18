@@ -85,17 +85,6 @@
  *  undef to disable sending a notice to clients connecting if they are
  *  spoofed, or define to the message you want to send
  *
- * SPOOF_WHOISCLOAKED
- *
- *  (only available when SPOOF is defined)
- *
- *  undef to disable sending a RPL_WHOISCLOAKED in /WHOIS reply for
- *  spoofed (local) clients, or define to the message you want to show
- *  for them
- *
- *  (will define to RPL_WHOISEXTRA if available, otherwise non-standard
- *  use of numeric 320).
- *
  *  SASL_WHOISLOGGEDIN
  *
  *  (only available when SPOOF is defined)
@@ -1101,7 +1090,6 @@
 /* we dont want these if SPOOF is not defined */
 #undef SPOOF_WELCOME
 #undef SPOOF_NOTICE
-#undef SPOOF_WHOISCLOAKED
 #undef SPOOF_IP
 #endif
 
