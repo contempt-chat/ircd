@@ -2007,6 +2007,10 @@ int 	initconf(int opt)
 				aconf->flags |= CFLAG_SPOOFED;
 			}
 #endif
+			if(aconf->status & CONF_LISTEN_PORT && tmp4 && *tmp4)
+			{
+				DupString(aconf->source_ip, tmp4);
+			}
 			/* trying to find exact conf line in already existing
 			 * conf, so we don't delete old one, just update it */
 			if (
