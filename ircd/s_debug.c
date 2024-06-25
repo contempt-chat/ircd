@@ -375,7 +375,7 @@ void	send_defines(aClient *cptr, char *nick, char *extend)
 #endif
 #endif
 #ifdef SPOOF_IDENTCHAR
-		SPOOF_IDENTCHAR,
+		SPOOF_IDENTCHAR
 #else
 		0
 #endif

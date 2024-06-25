@@ -104,8 +104,7 @@ void cap_list(aClient *target, char *arg) {
  */
 void cap_req(aClient *target, char *arg) {
     char buf[2][BUFSIZE], *p = NULL, *s, *arg_copy;
-    int flags_add = 0, flags_del = 0;
-    int buf_idx = 0, prfx_len;
+    int buf_idx = 0, prfx_len, current_caps;
     struct Cap *cap;
 
     if (!arg || !*arg) {
@@ -120,6 +119,7 @@ void cap_req(aClient *target, char *arg) {
     arg_copy = mystrdup(arg);
     prfx_len = snprintf(buf[0], BUFSIZE, ":%s CAP %s ACK :", ME, BadTo(target->name));
     memset(buf[1], 0, BUFSIZE);
+    current_caps = target->caps;
 
     for (s = strtoken(&p, arg_copy, " "); s; s = strtoken(&p, NULL, " ")) {
         if ((cap = find_cap(*s == '-' ? s + 1 : s))) {
@@ -129,10 +129,10 @@ void cap_req(aClient *target, char *arg) {
             }
 
             if (*s != '-') {
-                flags_add |= cap->flag;
+                current_caps |= cap->flag;
             }
             else {
-                flags_del |= cap->flag;
+                current_caps &= ~cap->flag;
             }
 
             strcat(buf[buf_idx], s);
@@ -146,8 +146,7 @@ void cap_req(aClient *target, char *arg) {
         }
     }
 
-    target->caps |= flags_add;
-    target->caps &= ~flags_del;
+    target->caps = current_caps;
 
     // Send ACK
     if (strlen(buf[0]) > prfx_len) {
