@@ -588,7 +588,8 @@ void	start_auth(aClient *cptr)
 	us.SIN_FAMILY = AFINET;
 
 	// Check if a source IP has been set in P-Line (usually if an SSL proxy is used)
-	if (cptr->acpt->confs && IsConfTLS(cptr->acpt->confs->value.aconf) && !BadPtr(cptr->acpt->confs->value.aconf->source_ip))
+	if (cptr->acpt->confs && IsConfTLS(cptr->acpt->confs->value.aconf)
+		&& !BadPtr(cptr->acpt->confs->value.aconf->source_ip))
 	{
 # ifdef INET6
 		inet_pton(AF_INET6, cptr->acpt->confs->value.aconf->source_ip, us.sin6_addr.s6_addr);
