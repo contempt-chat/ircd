@@ -789,10 +789,6 @@ int	tcp_connect(char *ourIP, char *theirIP, u_short port, char **error)
 		*error = errbuf;
 		return -1;
 	    }
-#if defined(INET6)
-    int opt = 0;
-    setsockopt(fd, IPPROTO_IPV6, IPV6_V6ONLY, (void *)&opt, sizeof(opt));
-#endif
 	/*
 	 * this bzero() shouldn't be needed.. should it?
 	 * AIX 4.1.5 doesn't like not having it tho.. I have no clue why -kalt

@@ -593,13 +593,6 @@ void	start_iauth(int rcvdsig)
 	adfd = sp[0];
 	set_non_blocking(sp[0], NULL);
 	set_non_blocking(sp[1], NULL); /* less to worry about in iauth */
-
-#ifdef INET6
-    int opt = 0;
-	SETSOCKOPT(sp[0], IPPROTO_IPV6, IPV6_V6ONLY, &opt, opt);
-	SETSOCKOPT(sp[1], IPPROTO_IPV6, IPV6_V6ONLY, &opt, opt);
-#endif
-
 	val = IAUTH_BUFFER;
 	if (setsockopt(sp[0], SOL_SOCKET, SO_SNDBUF, (void *) &val,
 	    sizeof(val)) < 0)
@@ -1546,11 +1539,6 @@ static	int	set_sock_opts(int fd, aClient *cptr)
 	opt = 8192;
 	SETSOCKOPT(fd, SOL_SOCKET, SO_SNDLOWAT, &opt, opt);
 # endif
-#endif
-#if defined(IP_OPTIONS) && defined(IPPROTO_IP) && defined(INET6)
-    opt = 0;
-	if (SETSOCKOPT(fd, IPPROTO_IPV6, IPV6_V6ONLY, &opt, opt) < 0)
-		report_error("setsockopt(IPV6_V6ONLY) %s:%s", cptr);
 #endif
 #if defined(IP_OPTIONS) && defined(IPPROTO_IP) && !defined(AIX) && \
     !defined(INET6)
@@ -2766,10 +2754,6 @@ static	struct	SOCKADDR *connect_inet(aConfItem *aconf, aClient *cptr,
 			    "No more connections allowed (%s)", cptr->name);
 		return NULL;
 	    }
-#ifdef INET6
-    int opt = 0;
-	SETSOCKOPT(cptr->fd, IPPROTO_IPV6, IPV6_V6ONLY, &opt, opt);
-#endif
 	bzero((char *)&server, sizeof(server));
 	server.SIN_FAMILY = AFINET;
 	get_sockhost(cptr, aconf->host);
@@ -3179,12 +3163,9 @@ int	setup_ping(aConfItem *aconf)
 		(void)close(udpfd);
 		return udpfd = -1;
 	    }
-#ifdef INET6
 	on = 0;
 	(void) SETSOCKOPT(udpfd, SOL_SOCKET, SO_BROADCAST, &on, on);
-    (void) SETSOCKOPT(udpfd, IPPROTO_IPV6, IPV6_V6ONLY, &on, on);
-#endif
-    if (bind(udpfd, (SAP)&from, sizeof(from))==-1)
+	if (bind(udpfd, (SAP)&from, sizeof(from))==-1)
 	    {
 #ifdef	USE_SYSLOG
 		syslog(LOG_ERR, "bind udp.%d fd %d : %m",
