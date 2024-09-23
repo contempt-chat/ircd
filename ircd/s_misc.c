@@ -196,18 +196,8 @@ char	*get_client_name(aClient *sptr, int showip)
 				(void)sprintf(nbuf, "%s[%.*s@%s]",
 					sptr->name, USERLEN,
 					(!(sptr->flags & FLAGS_GOTID)) ? "" :
-#ifdef SPOOF
-					sptr->auth, sptr->user ? get_client_ip(sptr) :
-#else
-					sptr->auth, sptr->user ? sptr->user->sip :
-#endif
-#ifdef INET6
-					      inetntop(AF_INET6,
-						       (char *)&sptr->ip,
-						       ipv6string, sizeof(ipv6string))
-#else
-					      inetntoa((char *)&sptr->ip)
-#endif
+					sptr->auth,
+					get_client_ip(sptr)
 					);
 			else
 			    {
@@ -251,19 +241,32 @@ char	*get_client_host(aClient *cptr)
 	return nbuf;
 }
 
-#ifdef SPOOF
 char	*get_client_ip(aClient *cptr)
 {
-	if(IsSpoofed(cptr))
+	if (sptr->user)
 	{
-		return SPOOF_IP;
+#ifdef SPOOF
+		if(IsSpoofed(cptr))
+		{
+			return SPOOF_IP;
+		}
+		else
+		{
+			return cptr->user->sip;
+		}
+#else
+		return sptr->user->sip;
+#endif
 	}
 	else
 	{
-		return cptr->user->sip;
+#ifdef INET6
+		return inetntop(AF_INET6, (char *)&sptr->ip, ipv6string, sizeof(ipv6string))
+#else
+		return inetntoa((char *)&sptr->ip);
+#endif
 	}
 }
-#endif
 
 /*
  * Form sockhost such that if the host is of form user@host, only the host

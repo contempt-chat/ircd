@@ -42,9 +42,7 @@ EXTERN int check_registered (aClient *sptr);
 EXTERN int check_registered_service (aClient *sptr);
 EXTERN char *get_client_name (aClient *sptr, int showip);
 EXTERN char *get_client_host (aClient *cptr);
-#ifdef SPOOF
 EXTERN char *get_client_ip (aClient *cptr);
-#endif
 EXTERN void get_sockhost (Reg aClient *cptr, Reg char *host);
 EXTERN char *my_name_for_link (char *name, Reg int count);
 EXTERN int mark_blind_servers (aClient *cptr, aClient *server);
