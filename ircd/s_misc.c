@@ -243,6 +243,8 @@ char	*get_client_host(aClient *cptr)
 
 char	*get_client_ip(aClient *cptr)
 {
+	if (IsServer(cptr))
+		return "255.255.255.255";
 	if (sptr->user)
 	{
 #ifdef SPOOF
