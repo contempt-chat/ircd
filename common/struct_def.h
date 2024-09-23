@@ -1069,7 +1069,6 @@ struct who_opts
 #define TSET_ACONNECT 0x001
 #define TSET_POOLSIZE 0x002
 #define TSET_CACCEPT 0x004
-#define TSET_SPLIT 0x008
 #define TSET_SHOWALL (int) ~0
 
 /* Runtime configuration structure */
