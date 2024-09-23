@@ -2871,7 +2871,7 @@ int	m_etrace(aClient *cptr, aClient *sptr, int parc, char *parv[])
 				IsAnOper(acptr) ? "Oper" : "User",
 				get_client_class(acptr),
 				acptr->name, acptr->user->username,
-				acptr->user->host, acptr->user->sip,
+				acptr->user->host, get_client_ip(acptr),
 #ifdef XLINE
 				acptr->user2, acptr->user3, 
 #else
@@ -2894,7 +2894,7 @@ int	m_etrace(aClient *cptr, aClient *sptr, int parc, char *parv[])
 				IsAnOper(acptr) ? "Oper" : "User", 
 				get_client_class(acptr), 
 				acptr->name, acptr->user->username, 
-				acptr->user->host, acptr->user->sip,
+				acptr->user->host, get_client_ip(acptr),
 #ifdef XLINE
 				acptr->user2, acptr->user3, 
 #else
@@ -2930,7 +2930,7 @@ int	m_sidtrace(aClient *cptr, aClient *sptr, int parc, char *parv[])
 			IsAnOper(acptr) ? "Oper" : "User", 
 			MyClient(acptr) ? get_client_class(acptr) : -1, 
 			acptr->name, acptr->user->username,
-			acptr->user->host, acptr->user->sip, 
+			acptr->user->host, get_client_ip(acptr),
 #ifdef XLINE
 			MyClient(acptr) ? acptr->user2 : "-",
 			MyClient(acptr) ? acptr->user3 : "-",

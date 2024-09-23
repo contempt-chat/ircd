@@ -211,7 +211,8 @@ char	*get_client_name(aClient *sptr, int showip)
 							sptr->user->username :
 							sptr->auth,
 						IsPerson(sptr) ? sptr->user->host :
-						sptr->sockhost);
+							IsServer(sptr) ? "255.255.255.255" :
+							sptr->sockhost);
 				else
 					return sptr->name;
 			    }
@@ -245,7 +246,7 @@ char	*get_client_ip(aClient *cptr)
 {
 	if (IsServer(cptr))
 		return "255.255.255.255";
-	if (sptr->user)
+	if (cptr->user)
 	{
 #ifdef SPOOF
 		if(IsSpoofed(cptr))
@@ -257,15 +258,15 @@ char	*get_client_ip(aClient *cptr)
 			return cptr->user->sip;
 		}
 #else
-		return sptr->user->sip;
+		return cptr->user->sip;
 #endif
 	}
 	else
 	{
 #ifdef INET6
-		return inetntop(AF_INET6, (char *)&sptr->ip, ipv6string, sizeof(ipv6string))
+		return inetntop(AF_INET6, (char *)&cptr->ip, ipv6string, sizeof(ipv6string));
 #else
-		return inetntoa((char *)&sptr->ip);
+		return inetntoa((char *)&cptr->ip);
 #endif
 	}
 }
