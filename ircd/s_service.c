@@ -297,7 +297,7 @@ aConfItem	*find_conf_service(aClient *cptr, int type, aConfItem *aconf)
 		if (!(tmp->status & CONF_SERVICE))
 			continue;
 		Debug((DEBUG_INFO,"service: cl=%d host (%s) name (%s) port=%d",
-			tmp->clients, tmp->host, tmp->name, tmp->port));
+			tmp->clients, get_conf_host(tmp), tmp->name, tmp->port));
 		Debug((DEBUG_INFO,"service: host (%s) name (%s) type=%d",
 			cptr->sockhost, cptr->name, type));
 		if (tmp->clients || (type && tmp->port != type) ||

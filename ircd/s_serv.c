@@ -3854,7 +3854,7 @@ static void report_listeners(aClient *sptr, char *to)
 		sendto_one(sptr, ":%s %d %s %d %s %s %u %lu %llu %lu %llu %u"
 				 " %u %s",
 			ME, RPL_STATSLINKINFO, to,
-			tmp->port, BadTo(tmp->host),
+			tmp->port, BadTo(get_conf_host(tmp)),
 			pline_flags_to_string(tmp->flags),
 			(uint)DBufLength(&acptr->sendQ),
 			acptr->sendM, acptr->sendB,

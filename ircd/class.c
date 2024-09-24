@@ -62,10 +62,13 @@ static	int	get_conf_ping(aConfItem *aconf)
 char *get_conf_host(aConfItem *aconf)
 {
 #ifdef CLOAK_SERVER_ADDRESSES
-	if (aconf->status == CONF_ZCONNECT_SERVER /* c */
-				|| aconf->status == CONF_CONNECT_SERVER /* C */
-				|| aconf->status == CONF_NOCONNECT_SERVER /* N */
-				|| aconf->status == CONF_LISTEN_PORT /* P */)
+	if (aconf->status & (
+			CONF_ZCONNECT_SERVER /* c */
+			| CONF_CONNECT_SERVER /* C */
+			| CONF_NOCONNECT_SERVER /* N */
+			| CONF_LISTEN_PORT /* P */
+			| CONF_LEAF /* L */
+			| CONF_HUB /* H */))
 		return "hidden";
 	else
 #endif
