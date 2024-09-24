@@ -59,7 +59,18 @@ static	int	get_conf_ping(aConfItem *aconf)
 	return (BAD_PING);
 }
 
-
+char *get_conf_host(aConfItem *aconf)
+{
+#ifdef CLOAK_SERVER_ADDRESSES
+	if (aconf->status == CONF_ZCONNECT_SERVER /* c */
+				|| aconf->status == CONF_CONNECT_SERVER /* C */
+				|| aconf->status == CONF_NOCONNECT_SERVER /* N */
+				|| aconf->status == CONF_LISTEN_PORT /* P */)
+		return "hidden";
+	else
+#endif
+	return aconf->host;
+}
 
 int	get_client_class(aClient *acptr)
 {

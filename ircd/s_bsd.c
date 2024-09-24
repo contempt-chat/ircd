@@ -2582,12 +2582,12 @@ int	connect_server(aConfItem *aconf, aClient *by, struct hostent *hp)
 
 #ifdef INET6
 	Debug((DEBUG_NOTICE,"Connect to %s[%s] @%s",
-	       aconf->name, aconf->host,
+	       aconf->name, get_conf_host(aconf),
 	       inet_ntop(AF_INET6, (char *)&aconf->ipnum, ipv6string,
 			 sizeof(ipv6string))));
 #else
 	Debug((DEBUG_NOTICE,"Connect to %s[%s] @%s",
-	       aconf->name, aconf->host,
+	       aconf->name, get_conf_host(aconf),
 	       inetntoa((char *)&aconf->ipnum)));
 #endif
 
@@ -2704,7 +2704,7 @@ free_server:
 	    {
       		sendto_flag(SCH_NOTICE,
 			    "Host %s is not enabled for connecting:no C/N-line",
-			    aconf->host);
+				get_conf_host(aconf));
 		if (by && IsPerson(by) && !MyClient(by))
 		  sendto_one(by,
 			     ":%s NOTICE %s :Connect to host %s failed.",
@@ -3502,7 +3502,7 @@ static	void	do_dns_async(void)
 			else
 				sendto_flag(SCH_ERROR,
 					    "Connect to %s failed: host lookup",
-					   (aconf) ? aconf->host : "unknown");
+					   (aconf) ? get_conf_host(aconf) : "unknown");
 			break;
 		case ASYNC_CONF :
 			aconf = ln.value.aconf;
