@@ -70,7 +70,12 @@ char *get_conf_host(aConfItem *aconf)
 			| CONF_LEAF /* L */
 			| CONF_HUB /* H */
 			| CONF_SERVICE /* S */))
-		return "hidden";
+	{
+		if (aconf->status & (CONF_SERVER_MASK|CONF_OPERATOR|CONF_SERVICE))
+			return "*@255.255.255.255";
+		else
+			return "255.255.255.255";
+	}
 	else
 #endif
 	return aconf->host;

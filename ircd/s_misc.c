@@ -275,7 +275,7 @@ char *get_client_sockhost(aClient *cptr)
 	static char buf[32];
 	if (IsMe(cptr) || IsServer(cptr) || IsService(cptr))
 	{
-		snprintf(buf, sizeof(buf), " %s.%d", "255.255.255.255", cptr->port);
+		snprintf(buf, sizeof(buf), "%s.%d", "255.255.255.255", cptr->port);
 		return buf;
 	}
 	else
