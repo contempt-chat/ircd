@@ -196,18 +196,8 @@ char	*get_client_name(aClient *sptr, int showip)
 				(void)sprintf(nbuf, "%s[%.*s@%s]",
 					sptr->name, USERLEN,
 					(!(sptr->flags & FLAGS_GOTID)) ? "" :
-#ifdef SPOOF
-					sptr->auth, sptr->user ? get_client_ip(sptr) :
-#else
-					sptr->auth, sptr->user ? sptr->user->sip :
-#endif
-#ifdef INET6
-					      inetntop(AF_INET6,
-						       (char *)&sptr->ip,
-						       ipv6string, sizeof(ipv6string))
-#else
-					      inetntoa((char *)&sptr->ip)
-#endif
+					sptr->auth,
+					get_client_ip(sptr)
 					);
 			else
 			    {
@@ -216,12 +206,9 @@ char	*get_client_name(aClient *sptr, int showip)
 					 * ident for others.
 					 */
 					sprintf(nbuf, "%s[%.*s@%s]",
-						sptr->name, USERLEN,
-						IsPerson(sptr) ?
-							sptr->user->username :
-							sptr->auth,
-						IsPerson(sptr) ? sptr->user->host :
-						sptr->sockhost);
+							sptr->name, USERLEN,
+							IsPerson(sptr) ? sptr->user->username : sptr->auth,
+							IsPerson(sptr) ? sptr->user->host : get_client_sockhost(sptr));
 				else
 					return sptr->name;
 			    }
@@ -251,19 +238,50 @@ char	*get_client_host(aClient *cptr)
 	return nbuf;
 }
 
-#ifdef SPOOF
 char	*get_client_ip(aClient *cptr)
 {
-	if(IsSpoofed(cptr))
+#ifdef CLOAK_SERVER_ADDRESSES
+	if (IsMe(cptr) || IsServer(cptr) || IsService(cptr))
+		return "255.255.255.255";
+#endif
+	if (cptr->user)
 	{
-		return SPOOF_IP;
+#ifdef SPOOF
+		if(IsSpoofed(cptr))
+		{
+			return SPOOF_IP;
+		}
+		else
+		{
+			return cptr->user->sip;
+		}
+#else
+		return cptr->user->sip;
+#endif
 	}
 	else
 	{
-		return cptr->user->sip;
+#ifdef INET6
+		return inetntop(AF_INET6, (char *)&cptr->ip, ipv6string, sizeof(ipv6string));
+#else
+		return inetntoa((char *)&cptr->ip);
+#endif
 	}
 }
+
+char *get_client_sockhost(aClient *cptr)
+{
+#ifdef CLOAK_SERVER_ADDRESSES
+	static char buf[32];
+	if (IsMe(cptr) || IsServer(cptr) || IsService(cptr))
+	{
+		snprintf(buf, sizeof(buf), "%s.%d", "255.255.255.255", cptr->port);
+		return buf;
+	}
+	else
 #endif
+		return cptr->sockhost;
+}
 
 /*
  * Form sockhost such that if the host is of form user@host, only the host

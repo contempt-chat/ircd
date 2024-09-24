@@ -59,7 +59,27 @@ static	int	get_conf_ping(aConfItem *aconf)
 	return (BAD_PING);
 }
 
-
+char *get_conf_host(aConfItem *aconf)
+{
+#ifdef CLOAK_SERVER_ADDRESSES
+	if (aconf->status & (
+			CONF_ZCONNECT_SERVER /* c */
+			| CONF_CONNECT_SERVER /* C */
+			| CONF_NOCONNECT_SERVER /* N */
+			| CONF_LISTEN_PORT /* P */
+			| CONF_LEAF /* L */
+			| CONF_HUB /* H */
+			| CONF_SERVICE /* S */))
+	{
+		if (aconf->status & (CONF_SERVER_MASK|CONF_OPERATOR|CONF_SERVICE))
+			return "*@255.255.255.255";
+		else
+			return "255.255.255.255";
+	}
+	else
+#endif
+	return aconf->host;
+}
 
 int	get_client_class(aClient *acptr)
 {

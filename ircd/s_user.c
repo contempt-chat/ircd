@@ -874,11 +874,8 @@ int	register_user(aClient *cptr, aClient *sptr, char *nick, char *username)
 		sendto_one(acptr,
 				":%s UNICK %s %s %s %s %s %s %s :%s",
 				user->servp->sid, nick, sptr->uid,
-#ifdef SPOOF
 				user->username, user->host, get_client_ip(sptr),
-#else
 				user->username, user->host, user->sip,
-#endif
 				(*buf) ? buf : "+",
                 IsSASLAuthed(sptr) ? sptr->sasl_user : "*",
 				sptr->info);

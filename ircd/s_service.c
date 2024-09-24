@@ -200,11 +200,7 @@ static	void	sendnum_toone(aClient *cptr, int wants, aClient *sptr,
 			sptr->uid,
 			(wants & SERVICE_WANT_USER) ? sptr->user->username : ".",
 			(wants & SERVICE_WANT_USER) ? sptr->user->host : ".",
-#ifdef SPOOF
 			(wants & SERVICE_WANT_USER) ? get_client_ip(sptr) : ".",
-#else
-			(wants & SERVICE_WANT_USER) ? sptr->user->sip : ".",
-#endif
 			(wants & (SERVICE_WANT_UMODE|SERVICE_WANT_OPER)) ? umode : "+",
 			IsSASLAuthed(sptr) ? sptr->sasl_user : "*",
 			(wants & SERVICE_WANT_USER) ? sptr->info : "");

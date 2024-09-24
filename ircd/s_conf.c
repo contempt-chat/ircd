@@ -2432,7 +2432,7 @@ findkline:
 		sendto_one(cptr, replies[ERR_YOUREBANNEDCREEP], 
 			ME, cptr->name,
 			BadPtr(tmp->name) ? "*" : tmp->name,
-			BadPtr(tmp->host) ? "*" : tmp->host,
+			BadPtr(tmp->host) ? "*" : get_conf_host(tmp),
 			*comment ? ": " : "",
 			*comment ? *comment : "");
 	}
