@@ -1067,7 +1067,7 @@ int	m_server_estab(aClient *cptr, char *sid, char *versionbuf)
 		s = (char *)index(aconf->host, '@');
 		*s = '\0'; /* should never be NULL */
 		Debug((DEBUG_INFO, "Check Usernames [%s]vs[%s]",
-				aconf->host, cptr->username));
+			aconf->host, cptr->username));
 		if (match(aconf->host, cptr->username))
 		    {
 			*s = '@';
