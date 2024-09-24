@@ -1203,7 +1203,7 @@ check_serverback:
 	    {
 		get_sockhost(cptr, sockname);
 		Debug((DEBUG_DNS, "sv_cl: access denied: %s[%s@%s] c %x n %x",
-			name, cptr->auth, get_client_sockhost(cptr),
+			name, cptr->auth, cptr->sockhost,
 			c_conf, n_conf));
 		return -1;
 	    }
@@ -2582,12 +2582,12 @@ int	connect_server(aConfItem *aconf, aClient *by, struct hostent *hp)
 
 #ifdef INET6
 	Debug((DEBUG_NOTICE,"Connect to %s[%s] @%s",
-	       aconf->name, get_conf_host(aconf),
+	       aconf->name, aconf->host,
 	       inet_ntop(AF_INET6, (char *)&aconf->ipnum, ipv6string,
 			 sizeof(ipv6string))));
 #else
 	Debug((DEBUG_NOTICE,"Connect to %s[%s] @%s",
-	       aconf->name, get_conf_host(aconf),
+	       aconf->name, aconf->host,
 	       inetntoa((char *)&aconf->ipnum)));
 #endif
 
