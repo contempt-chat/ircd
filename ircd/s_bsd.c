@@ -1032,7 +1032,7 @@ int	check_server_init(aClient *cptr)
 		if (!c_conf || !n_conf)
 		    {
 			sendto_flag(SCH_ERROR, "Connecting Error: %s[%s]",
-				   name, cptr->sockhost);
+				   name, get_client_sockhost(cptr));
 			det_confs_butmask(cptr, 0);
 			return -1;
 		    }
@@ -1203,7 +1203,7 @@ check_serverback:
 	    {
 		get_sockhost(cptr, sockname);
 		Debug((DEBUG_DNS, "sv_cl: access denied: %s[%s@%s] c %x n %x",
-			name, cptr->auth, cptr->sockhost,
+			name, cptr->auth, get_client_sockhost(cptr),
 			c_conf, n_conf));
 		return -1;
 	    }
@@ -1775,9 +1775,9 @@ aClient	*add_connection(aClient *cptr, int fd)
 		if (check_clones(acptr) > CLONE_MAX)
 		{
 			sendto_flag(SCH_LOCAL, "Rejecting connection from %s.",
-				acptr->sockhost);
+				get_client_sockhost(acptr));
 			acptr->exitc = EXITC_CLONE;
-			sendto_flog(acptr, EXITC_CLONE, "", acptr->sockhost);
+			sendto_flog(acptr, EXITC_CLONE, "", get_client_sockhost(acptr));
 #ifdef DELAY_CLOSE
 			nextdelayclose = delay_close(fd);
 #else

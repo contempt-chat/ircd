@@ -206,15 +206,9 @@ char	*get_client_name(aClient *sptr, int showip)
 					 * ident for others.
 					 */
 					sprintf(nbuf, "%s[%.*s@%s]",
-						sptr->name, USERLEN,
-						IsPerson(sptr) ?
-							sptr->user->username :
-							sptr->auth,
-						IsPerson(sptr) ? sptr->user->host :
-#ifdef CLOAK_SERVER_ADDRESSES
-							IsServer(sptr) ? "255.255.255.255" :
-#endif
-							sptr->sockhost);
+							sptr->name, USERLEN,
+							IsPerson(sptr) ? sptr->user->username : sptr->auth,
+							IsPerson(sptr) ? sptr->user->host : get_client_sockhost(sptr));
 				else
 					return sptr->name;
 			    }
@@ -247,7 +241,7 @@ char	*get_client_host(aClient *cptr)
 char	*get_client_ip(aClient *cptr)
 {
 #ifdef CLOAK_SERVER_ADDRESSES
-	if (IsServer(cptr))
+	if (IsMe(cptr) || IsServer(cptr) || IsService(cptr))
 		return "255.255.255.255";
 #endif
 	if (cptr->user)
@@ -273,6 +267,20 @@ char	*get_client_ip(aClient *cptr)
 		return inetntoa((char *)&cptr->ip);
 #endif
 	}
+}
+
+char *get_client_sockhost(aClient *cptr)
+{
+#ifdef CLOAK_SERVER_ADDRESSES
+	static char buf[32];
+	if (IsMe(cptr) || IsServer(cptr) || IsService(cptr))
+	{
+		snprintf(buf, sizeof(buf), " %s.%d", "255.255.255.255", cptr->port);
+		return buf;
+	}
+	else
+#endif
+		return cptr->sockhost;
 }
 
 /*
