@@ -1759,7 +1759,17 @@ static	void	report_configured_links(aClient *sptr, char *to, int mask)
 			if (!*p)
 				continue;
 			c = (char)*(p+2);
-			host = BadPtr(tmp->host) ? null : tmp->host;
+
+#ifdef CLOAK_SERVER_ADDRESSES
+			if (tmp->status == CONF_ZCONNECT_SERVER /* c */
+				|| tmp->status == CONF_CONNECT_SERVER /* C */
+				|| tmp->status == CONF_NOCONNECT_SERVER /* N */)
+					host = "*@255.255.255.255";
+			else
+#endif
+				host = BadPtr(tmp->host) ? null : tmp->host;
+
+
 			pass = BadPtr(tmp->passwd) ? NULL : tmp->passwd;
 			name = BadPtr(tmp->name) ? null : tmp->name;
 			port = (int)tmp->port;
@@ -1828,7 +1838,13 @@ static	void	report_ping(aClient *sptr, char *to)
 		if ((cp = tmp->ping) && cp->lseq)
 		    {
 			if (mycmp(tmp->name, tmp->host))
-				sprintf(buf,"%s[%s]",tmp->name, tmp->host);
+				sprintf(buf, "%s[%s]", tmp->name,
+#ifdef CLOAK_SERVER_ADDRESSES
+						"*@255.255.255.255"
+#else
+						tmp->host
+#endif
+						);
 			else
 				(void)strcpy(buf, tmp->name);
 			sendto_one(sptr, replies[RPL_STATSPING], ME, BadTo(to),

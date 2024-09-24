@@ -211,7 +211,9 @@ char	*get_client_name(aClient *sptr, int showip)
 							sptr->user->username :
 							sptr->auth,
 						IsPerson(sptr) ? sptr->user->host :
+#ifdef CLOAK_SERVER_ADDRESSES
 							IsServer(sptr) ? "255.255.255.255" :
+#endif
 							sptr->sockhost);
 				else
 					return sptr->name;
@@ -244,8 +246,10 @@ char	*get_client_host(aClient *cptr)
 
 char	*get_client_ip(aClient *cptr)
 {
+#ifdef CLOAK_SERVER_ADDRESSES
 	if (IsServer(cptr))
 		return "255.255.255.255";
+#endif
 	if (cptr->user)
 	{
 #ifdef SPOOF
