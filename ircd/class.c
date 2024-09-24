@@ -68,7 +68,8 @@ char *get_conf_host(aConfItem *aconf)
 			| CONF_NOCONNECT_SERVER /* N */
 			| CONF_LISTEN_PORT /* P */
 			| CONF_LEAF /* L */
-			| CONF_HUB /* H */))
+			| CONF_HUB /* H */
+			| CONF_SERVICE /* S */))
 		return "hidden";
 	else
 #endif
