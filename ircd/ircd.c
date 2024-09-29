@@ -378,7 +378,7 @@ static	time_t	try_connections(time_t currenttime)
 		{
 			sendto_flag(SCH_NOTICE,
 				    "Connection to %s[%s] activated.",
-				    con_conf->name, con_conf->host);
+				    con_conf->name, get_conf_host(con_conf));
 		}
 	}
 	else

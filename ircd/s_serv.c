@@ -726,7 +726,7 @@ int	m_server(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	      		sendto_flag(SCH_ERROR,
 				    "Leaf-only link %s->%s - Closing",
 				    get_client_name(cptr, TRUE),
-				    aconf->host ? aconf->host : "*");
+				    aconf->host ? get_conf_host(aconf) : "*");
 	      		sendto_one(cptr, "ERROR :Leaf-only link, sorry.");
       			return exit_client(cptr, cptr, &me, "Leaf Only");
 		    }
@@ -740,7 +740,7 @@ int	m_server(aClient *cptr, aClient *sptr, int parc, char *parv[])
 			sendto_flag(SCH_ERROR,
 				    "Non-Hub link %s introduced %s(%s).",
 				    get_client_name(cptr, TRUE), host,
-				   aconf ? (aconf->host ? aconf->host : "*") :
+				   aconf ? (aconf->host ? get_conf_host(aconf) : "*") :
 				   "!");
 			return exit_client(cptr, cptr, &me,
 					   "Too many servers");
@@ -1074,7 +1074,7 @@ int	m_server_estab(aClient *cptr, char *sid, char *versionbuf)
 			ircstp->is_ref++;
 			sendto_flag(SCH_ERROR,
 				    "Username mismatch [%s]v[%s] : %s",
-				    aconf->host, cptr->username,
+					get_conf_host(aconf), cptr->username,
 				    get_client_name(cptr, TRUE));
 			sendto_one(cptr, "ERROR :No Username Match");
 			return exit_client(cptr, cptr, &me, "Bad User");
@@ -1727,7 +1727,7 @@ static  void    report_x_lines(aClient *sptr, char *to)
 
 		sendto_one(sptr,":%s %d %s X :%s %s %s %s %s %s", 
 			ME, RPL_STATSDEBUG, to,
-			BadTo(tmp->host), BadTo(tmp->passwd),
+			BadTo(get_conf_host(tmp)), BadTo(tmp->passwd),
 			BadTo(tmp->name), BadTo(tmp->name2),
 			BadTo(tmp->name3), BadTo(tmp->source_ip));
 	}
@@ -1759,7 +1759,13 @@ static	void	report_configured_links(aClient *sptr, char *to, int mask)
 			if (!*p)
 				continue;
 			c = (char)*(p+2);
+
+#ifdef CLOAK_SERVER_ADDRESSES
+			host = BadPtr(tmp->host) ? null : get_conf_host(tmp);
+#else
 			host = BadPtr(tmp->host) ? null : tmp->host;
+#endif
+
 			pass = BadPtr(tmp->passwd) ? NULL : tmp->passwd;
 			name = BadPtr(tmp->name) ? null : tmp->name;
 			port = (int)tmp->port;
@@ -1828,7 +1834,13 @@ static	void	report_ping(aClient *sptr, char *to)
 		if ((cp = tmp->ping) && cp->lseq)
 		    {
 			if (mycmp(tmp->name, tmp->host))
-				sprintf(buf,"%s[%s]",tmp->name, tmp->host);
+				sprintf(buf, "%s[%s]", tmp->name,
+#ifdef CLOAK_SERVER_ADDRESSES
+						get_conf_host(tmp)
+#else
+						tmp->host
+#endif
+						);
 			else
 				(void)strcpy(buf, tmp->name);
 			sendto_one(sptr, replies[RPL_STATSPING], ME, BadTo(to),
@@ -2504,29 +2516,29 @@ int	m_connect(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	{
 	case 0:
 		sendto_one(sptr, ":%s NOTICE %s :*** Connecting to %s[%s].",
-			   ME, parv[0], aconf->host, aconf->name);
+			   ME, parv[0], get_conf_host(aconf), aconf->name);
 		sendto_flag(SCH_NOTICE, "Connecting to %s[%s] by %s",
-			    aconf->host, aconf->name,
+				get_conf_host(aconf), aconf->name,
 			    get_client_name(sptr, FALSE));
 		break;
 	case -1:
 		sendto_one(sptr, ":%s NOTICE %s :*** Couldn't connect to %s.",
-			   ME, parv[0], aconf->host);
+			   ME, parv[0], get_conf_host(aconf));
 		sendto_flag(SCH_NOTICE, "Couldn't connect to %s by %s",
-			    aconf->host, get_client_name(sptr, FALSE));
+				get_conf_host(aconf), get_client_name(sptr, FALSE));
 		break;
 	case -2:
 		sendto_one(sptr, ":%s NOTICE %s :*** Host %s is unknown.",
-			   ME, parv[0], aconf->host);
+			   ME, parv[0], get_conf_host(aconf));
 		sendto_flag(SCH_NOTICE, "Connect by %s to unknown host %s",
-			    get_client_name(sptr, FALSE), aconf->host);
+			    get_client_name(sptr, FALSE), get_conf_host(aconf));
 		break;
 	default:
 		sendto_one(sptr,
 			   ":%s NOTICE %s :*** Connection to %s failed: %s",
-			   ME, parv[0], aconf->host, strerror(retval));
+			   ME, parv[0], get_conf_host(aconf), strerror(retval));
 		sendto_flag(SCH_NOTICE, "Connection to %s by %s failed: %s",
-			    aconf->host, get_client_name(sptr, FALSE),
+				get_conf_host(aconf), get_client_name(sptr, FALSE),
 			    strerror(retval));
 	}
 	aconf->port = tmpport;
@@ -2577,7 +2589,7 @@ int	m_admin(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	    && aconf->name)
 	    {
 		sendto_one(sptr, replies[RPL_ADMINME], ME, BadTo(parv[0]), ME);
-		sendto_one(sptr, replies[RPL_ADMINLOC1], ME, BadTo(parv[0]), aconf->host);
+		sendto_one(sptr, replies[RPL_ADMINLOC1], ME, BadTo(parv[0]), get_conf_host(aconf));
 		sendto_one(sptr, replies[RPL_ADMINLOC2], ME, BadTo(parv[0]),
 			   aconf->passwd);
 		sendto_one(sptr, replies[RPL_ADMINEMAIL], ME, BadTo(parv[0]),
@@ -2871,7 +2883,7 @@ int	m_etrace(aClient *cptr, aClient *sptr, int parc, char *parv[])
 				IsAnOper(acptr) ? "Oper" : "User",
 				get_client_class(acptr),
 				acptr->name, acptr->user->username,
-				acptr->user->host, acptr->user->sip,
+				acptr->user->host, get_client_ip(acptr),
 #ifdef XLINE
 				acptr->user2, acptr->user3, 
 #else
@@ -2894,7 +2906,7 @@ int	m_etrace(aClient *cptr, aClient *sptr, int parc, char *parv[])
 				IsAnOper(acptr) ? "Oper" : "User", 
 				get_client_class(acptr), 
 				acptr->name, acptr->user->username, 
-				acptr->user->host, acptr->user->sip,
+				acptr->user->host, get_client_ip(acptr),
 #ifdef XLINE
 				acptr->user2, acptr->user3, 
 #else
@@ -2930,7 +2942,7 @@ int	m_sidtrace(aClient *cptr, aClient *sptr, int parc, char *parv[])
 			IsAnOper(acptr) ? "Oper" : "User", 
 			MyClient(acptr) ? get_client_class(acptr) : -1, 
 			acptr->name, acptr->user->username,
-			acptr->user->host, acptr->user->sip, 
+			acptr->user->host, get_client_ip(acptr),
 #ifdef XLINE
 			MyClient(acptr) ? acptr->user2 : "-",
 			MyClient(acptr) ? acptr->user3 : "-",
@@ -3842,7 +3854,7 @@ static void report_listeners(aClient *sptr, char *to)
 		sendto_one(sptr, ":%s %d %s %d %s %s %u %lu %llu %lu %llu %u"
 				 " %u %s",
 			ME, RPL_STATSLINKINFO, to,
-			tmp->port, BadTo(tmp->host),
+			tmp->port, BadTo(get_conf_host(tmp)),
 			pline_flags_to_string(tmp->flags),
 			(uint)DBufLength(&acptr->sendQ),
 			acptr->sendM, acptr->sendB,
