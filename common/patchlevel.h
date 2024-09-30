@@ -19,5 +19,6 @@
 #ifndef	PATCHLEVEL
 #define PATCHLEVEL "0211030003"		/* for server identification */
 #define DEVLEVEL 'a'
-#define VERSION_IRCNET2 "1.0.9a1"
+#define VERSION_IRCNET2 "1.0.9_dev"
+#define GIT_HASH_IN_VERSION
 #endif
