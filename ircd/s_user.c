@@ -875,7 +875,6 @@ int	register_user(aClient *cptr, aClient *sptr, char *nick, char *username)
 				":%s UNICK %s %s %s %s %s %s %s :%s",
 				user->servp->sid, nick, sptr->uid,
 				user->username, user->host, get_client_ip(sptr),
-				user->username, user->host, user->sip,
 				(*buf) ? buf : "+",
                 IsSASLAuthed(sptr) ? sptr->sasl_user : "*",
 				sptr->info);
