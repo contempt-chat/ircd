@@ -875,7 +875,6 @@ int	register_user(aClient *cptr, aClient *sptr, char *nick, char *username)
 				":%s UNICK %s %s %s %s %s %s %s :%s",
 				user->servp->sid, nick, sptr->uid,
 				user->username, user->host, get_client_ip(sptr),
-				user->username, user->host, user->sip,
 				(*buf) ? buf : "+",
                 IsSASLAuthed(sptr) ? sptr->sasl_user : "*",
 				sptr->info);
@@ -3411,8 +3410,11 @@ int	m_umode(aClient *cptr, aClient *sptr, int parc, char *parv[])
 				    {
 					if (what == MODE_ADD)
 					{
-                        if (((flag == FLAGS_HMODE) && is_allowed(sptr, ACL_HIDEIDLE)) || (flag != FLAGS_HMODE))
+						Debug((DEBUG_ERROR, "*********** m_umode(): %d", flag == FLAGS_HMODE));
+						if (((flag == FLAGS_HMODE) && is_allowed(sptr, ACL_HIDEIDLE)) || (flag != FLAGS_HMODE))
                             sptr->user->flags |= flag;
+						Debug((DEBUG_ERROR, "---2--"));
+
                     }
 					else
 						sptr->user->flags &= ~flag;	
@@ -3667,8 +3669,10 @@ int	is_allowed(aClient *cptr, long function)
         return 0; // use is_service_allowed()
 
 	/* We cannot judge not our clients. Yet. */
-	if ((!MyConnect(cptr) && (IsAnOper(cptr)||IsService(cptr))) || IsServer(cptr))
+	if ((!MyConnect(cptr) && IsAnOper(cptr)) || IsServer(cptr))
 		return 1;
+
+	Debug((DEBUG_ERROR, "######## is_allowed: %s (%d)", cptr->name, function == ACL_HIDEIDLE));
 
 	for (tmp = cptr->confs; tmp; tmp = tmp->next)
 	{
