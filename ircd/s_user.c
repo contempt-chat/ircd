@@ -3666,8 +3666,13 @@ int	is_allowed(aClient *cptr, long function)
         return 0; // use is_service_allowed()
 
 	/* We cannot judge not our clients. Yet. */
-	if ((!MyConnect(cptr) && (IsAnOper(cptr)||IsService(cptr))) || IsServer(cptr))
+	if ((!MyConnect(cptr) && (IsAnOper(cptr))) || IsServer(cptr))
 		return 1;
+
+	/* cptr->confs is not allocated for remote clients. */
+	if(!MyConnect(cptr)) {
+		return 0;
+	}
 
 	for (tmp = cptr->confs; tmp; tmp = tmp->next)
 	{
