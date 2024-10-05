@@ -2,10 +2,30 @@
 ## Introduction
 See https://ircv3.net/specs/extensions/whox
 
+## Standard fields
+| Field  | Description    | Hint           |
+| ------ | -------------- | -------------- |
+|t| \<token\> specified by the client||
+|c| an arbitrary channel the client is joined to||
+|u| username||
+|i| IP address||
+|h| hostname||
+|s| server name||
+|n| nickname||
+|f| WHO flags (away, server operator, etc)||
+|d| hop count (distance)||
+|l| number of seconds the user has been idle for| Idle time of users on other servers is not available |
+|a| account name|SASL account name or "0" if the user is not logged in|
+|o| channel op level|Always "n/a"|
+|r| realname||
+
 ## Additional non-standard fields
 The following additional fields have been added:
-- `S`: return the SID
-- `U`: return the UID
+| Field  | Description   |
+| ------ | ------------- |
+| S      | return the SID|
+| U      | return the UID|
+
 
 ## Examples
 Username/ident, IP address, hostname, nick
