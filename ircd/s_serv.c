@@ -1265,11 +1265,7 @@ int	m_server_estab(aClient *cptr, char *sid, char *versionbuf)
 					   acptr->name, acptr->uid,
 					   acptr->user->username,
 					   acptr->user->host,
-#ifdef SPOOF
 					   get_client_ip(acptr),
-#else
-					   acptr->user->sip,
-#endif
 					   (*buf) ? buf : "+",
                        IsSASLAuthed(acptr) ? acptr->sasl_user : "*",
                        acptr->info);
