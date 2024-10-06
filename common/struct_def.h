@@ -284,8 +284,8 @@ typedef enum Status {
 #define IsTLS(x)        ((x)->user && (x)->user->flags & FLAGS_TLS)
 #define SetTLS(x)       ((x)->user->flags |= FLAGS_TLS)
 #endif
-#define IsCAPNegotiation(x)  (MyConnect(x) && (x)->cap_negotation)
-#define HasCap(x, y)         (MyConnect(x) && (x)->caps & y)
+#define IsCAPNegotiation(x)	(MyConnect(x) && (x)->cap_negotation)
+#define HasCap(x, y)		(MyConnect(x) && (x)->caps & y)
 #define IsSASLAuthed(x)		 ((x)->flags & FLAGS_SASL)
 #define IsBlockedNonAuthMsg(from, to) (to->user->flags & FLAGS_MSGNEEDSASLAUTH) && IsPerson(from) \
                                     && !IsSASLAuthed(from) && !IsAnOper(from)
@@ -611,8 +611,8 @@ struct Client	{
 	char	*user2;	/* 2nd param of USER */
 	char	*user3;	/* 3rd param of USER */
 #endif
-    int caps; /* Enabled capabilities */
-    int cap_negotation; /* CAP negotiation is in progress. Registration must wait for "CAP END" */
+	int caps; /* Enabled capabilities */
+	int cap_negotation; /* CAP negotiation is in progress. Registration must wait for "CAP END" */
     aClient *sasl_service; /* The SASL service that is responsible for this user. */
     int sasl_auth_attempts; /* Number of SASL authentication attempts */
 #ifdef SPOOF
