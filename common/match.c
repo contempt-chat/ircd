@@ -334,11 +334,7 @@ int	isvalidusername(char *username)
 
 	ch = username;
 	if (*ch == '+' || *ch == '=' || *ch == '-' ||
-#ifdef SPOOF_IDENTCHAR
-		*ch == '^' || *ch == '~' || *ch == SPOOF_IDENTCHAR)
-#else
 		*ch == '^' || *ch == '~')
-#endif
 	{
 		/* do not allow them as first char */
 		return 0;

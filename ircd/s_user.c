@@ -591,9 +591,6 @@ int	register_user(aClient *cptr, aClient *sptr, char *nick, char *username)
 			}
 			return exit_client(cptr, cptr, &me, exit_msg[i].longm);
 		}
-#ifdef SPOOF
-		aconf = sptr->confs->value.aconf;
-#endif
 #ifndef	NO_PREFIX
 		if (IsRestricted(sptr))
 		{
@@ -611,19 +608,7 @@ int	register_user(aClient *cptr, aClient *sptr, char *nick, char *username)
 		}
 #endif
 
-#ifdef SPOOF
-#ifdef SPOOF_IDENTCHAR
-		if(IsSpoofed(cptr))
-		{
-			prefix = SPOOF_IDENTCHAR;
-			*user->username = prefix;
-			strncpy(&user->username[1], buf2, USERLEN);
-			user->username[USERLEN] = '\0';
-		}
-#endif
-#else
 		aconf = sptr->confs->value.aconf;
-#endif
 #ifdef UNIXPORT
 		if (IsUnixSocket(sptr))
 		{

@@ -53,14 +53,6 @@
  *
  *  undef to disable spoofs in I-lines.
  *
- * SPOOF_IDENTCHAR
- *
- *  undef to disable using spoof ident character, or define it to the
- *  character you want to use.
- *
- *  you may want to leave this defined even without SPOOF defined if
- *  other servers on the network use spoofs with ident character.
- *
  * SPOOF_WELCOME_ALL
  *
  *  define to only show nickname in RPL_WELCOME reply on connect for all
@@ -119,7 +111,6 @@
  */
 
 #define SPOOF
-/* #define SPOOF_IDENTCHAR    '_' */
 #define SPOOF_STATSDEFINE
 /* #define SPOOF_WELCOME_ALL */
 

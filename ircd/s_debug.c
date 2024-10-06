@@ -348,18 +348,13 @@ void	send_defines(aClient *cptr, char *nick, char *extend)
 	 *
 	 * slightly changed Spoof->SP and PO output -- mh 2020-12-06
 	 *
-	 * SP:<spoof> S1:<welcome> SN:<notice> SW:<whois> SI:<identchar>
+	 * SP:<spoof> S1:<welcome> SN:<notice> SW:<whois>
 	 *
 	 * spoof       1 if SPOOF is defined, othewise 0
 	 * welcome     2 if SPOOF_WELCOME_ALL is defined, 1 if SPOOF_WELCOME is defined, otherwise 0
-	 * identchar   0 if SPOOF_IDENTCHAR is not defined, otherwise SPOOF_IDENTCHAR character singe-quoted
 	 *
 	 */
-#ifdef SPOOF_IDENTCHAR
-	sendto_one(cptr, ":%s %d %s :SP:%d S1:%d SI:'%c'", ME, RPL_STATSDEFINE, nick,
-#else
-	sendto_one(cptr, ":%s %d %s :SP:%d S1:%d SI:%d", ME, RPL_STATSDEFINE, nick,
-#endif
+	sendto_one(cptr, ":%s %d %s :SP:%d S1:%d", ME, RPL_STATSDEFINE, nick,
 #ifdef SPOOF
 		1,
 #else
@@ -369,15 +364,10 @@ void	send_defines(aClient *cptr, char *nick, char *extend)
 		2,
 #else
 #ifdef SPOOF_WELCOME
-		1,
-#else
-		0,
-#endif
-#endif
-#ifdef SPOOF_IDENTCHAR
-		SPOOF_IDENTCHAR
+		1
 #else
 		0
+#endif
 #endif
 	);
 #endif

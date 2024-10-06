@@ -10,8 +10,7 @@ I-line extended with an optional field for a spoofed hostname:
  :<Flags>:<Spoofed Host Name>:
 
 the real hostname is replaced with the spoofed hostname, the real IP
-address is replaced by 255.255.255.255 (SPOOF_IP), and the username
-is prefixed with '_' (SPOOF_IDENTCHAR)
+address is replaced by 255.255.255.255 (SPOOF_IP).
 
 I-lines with spoofed host names are hidden from STATS I
 
@@ -41,9 +40,6 @@ config.h defines:
 
  SPOOF_IP ("255.255.255.255" by default)
   what to show instead of the real IP address of spoofed clients
-
- SPOOF_IDENTCHAR ('_' by default)
-  which  character to prefix usernames with
 
 patches included:
 
@@ -90,12 +86,6 @@ changelog:
   * SPOOF_IP config.h define added. the IP address shown instead of
     the real one (for example in /STATS L) for spoofed clients. this
     defaults to "255.255.255.255".
-
-  * SPOOF_IDENTCHAR config.h define added. you can now define a
-    different character than the default '_' or disable using an
-    ident character entirely. it can be defined without SPOOF defined
-    to block using the character without supporting spoofs. added to
-    STATS d as SI
 
  2020-01-11 -- mh
 
