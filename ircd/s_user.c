@@ -31,14 +31,7 @@ static const volatile char rcsid[] = "@(#)$Id: s_user.c,v 1.280 2010/08/12 16:29
 #include "s_externs.h"
 #undef S_USER_C
 
-struct who_opts
-{
-    int flags;
-    const char *token;
-};
-
 static void	save_user (aClient *, aClient *, char *);
-static int snprintf_append(char *str, int size, int pos, const char *fmt, ...);
 
 static char buf[BUFSIZE], buf2[BUFSIZE];
 
@@ -1758,22 +1751,6 @@ int	m_notice(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	return m_message(cptr, sptr, parc, parv, 1);
 }
 
-int snprintf_append(char *str, int size, int pos, const char *fmt, ...) {
-    int ret, max;
-
-    if(pos >= size)
-        return 0;
-    else
-        max = size - pos;
-
-    va_list ap;
-    va_start(ap, fmt);
-    ret = vsnprintf(str + pos, max, fmt, ap);
-    va_end(ap);
-
-    return ret;
-}
-
 /*
 ** who_one
 **	sends one RPL_WHOREPLY or RPL_WHOSPCRPL to sptr concerning acptr & repchan
@@ -1781,9 +1758,9 @@ int snprintf_append(char *str, int size, int pos, const char *fmt, ...) {
 static	void	who_one(aClient *sptr, aClient *acptr, aChannel *repchan,
 		Link *lp, struct who_opts *opts)
 {
-	char status[5];
+	char	status[5];
 	char *s;
-	int i = 0;
+	int	i = 0;
 
 	if (acptr->user->flags & FLAGS_AWAY)
 		status[i++] = 'G';
@@ -1984,78 +1961,81 @@ static	void	who_find(aClient *sptr, char *mask, struct who_opts *opts)
 	
 }
 
-void parse_who_arg(char *arg, struct who_opts *opts)
-{
-    char *s;
+void parse_who_arg(char *arg, struct who_opts *opts) {
+	char *s;
 
-    // WHO <mask> o
-    if(*arg == 'o') {
-        opts->flags |= WHO_FLAG_OPERS_ONLY;
-    }
+	// WHO <mask> o
+	if (*arg == 'o')
+	{
+		opts->flags |= WHO_FLAG_OPERS_ONLY;
+	}
 
-    // IRCv3 WHOX
-    if((s = strchr(arg, '%')) != NULL) {
-        char buf[BUFSIZE];
-        s++;
+	// WHOX
+	if ((s = strchr(arg, '%')) != NULL)
+	{
+		char buf[BUFSIZE];
+		s++;
 
-        for (; *s; s++) {
-            switch (*s) {
-                case 't' :
-                    opts->flags |= WHO_FLAG_TOKEN;
-                    break;
-                case 'c' :
-                    opts->flags |= WHO_FLAG_CHANNEL;
-                    break;
-                case 'u' :
-                    opts->flags |= WHO_FLAG_USER;
-                    break;
-                case 'i' :
-                    opts->flags |= WHO_FLAG_IP;
-                    break;
-                case 'h' :
-                    opts->flags |= WHO_FLAG_HOST;
-                    break;
-                case 's' :
-                    opts->flags |= WHO_FLAG_SERVER;
-                    break;
-                case 'n' :
-                    opts->flags |= WHO_FLAG_NICK;
-                    break;
-                case 'f' :
-                    opts->flags |= WHO_FLAG_FLAGS;
-                    break;
-                case 'd' :
-                    opts->flags |= WHO_FLAG_HOP;
-                    break;
-                case 'l' :
-                    opts->flags |= WHO_FLAG_IDLE;
-                    break;
-                case 'a' :
-                    opts->flags |= WHO_FLAG_ACCOUNT;
-                    break;
-                case 'o' :
-                    opts->flags |= WHO_FLAG_OP_LEVEL;
-                    break;
-                case 'S' :
-                    opts->flags |= WHO_FLAG_SID;
-                    break;
-                case 'U' :
-                    opts->flags |= WHO_FLAG_UID;
-                    break;
-                case 'r' :
-                    opts->flags |= WHO_FLAG_INFO;
-                    break;
-                case ',':
-                    s++;
-                    int token_len = strlen(s);
-                    if (*s && token_len <= 3)
-                        opts->token = s;
-                    s += token_len;
-                    s--;
-                    break;
-            }
-        }
-    }
+		for (; *s; s++)
+		{
+			switch (*s)
+			{
+				case 't' :
+					opts->flags |= WHO_FLAG_TOKEN;
+					break;
+				case 'c' :
+					opts->flags |= WHO_FLAG_CHANNEL;
+					break;
+				case 'u' :
+					opts->flags |= WHO_FLAG_USER;
+					break;
+				case 'i' :
+					opts->flags |= WHO_FLAG_IP;
+					break;
+				case 'h' :
+					opts->flags |= WHO_FLAG_HOST;
+					break;
+				case 's' :
+					opts->flags |= WHO_FLAG_SERVER;
+					break;
+				case 'n' :
+					opts->flags |= WHO_FLAG_NICK;
+					break;
+				case 'f' :
+					opts->flags |= WHO_FLAG_FLAGS;
+					break;
+				case 'd' :
+					opts->flags |= WHO_FLAG_HOP;
+					break;
+				case 'l' :
+					opts->flags |= WHO_FLAG_IDLE;
+					break;
+				case 'a' :
+					opts->flags |= WHO_FLAG_ACCOUNT;
+					break;
+				case 'o' :
+					opts->flags |= WHO_FLAG_OP_LEVEL;
+					break;
+				case 'S' :
+					opts->flags |= WHO_FLAG_SID;
+					break;
+				case 'U' :
+					opts->flags |= WHO_FLAG_UID;
+					break;
+				case 'r' :
+					opts->flags |= WHO_FLAG_INFO;
+					break;
+				case ',':
+					s++;
+					int token_len = strlen(s);
+					if (*s && token_len <= 3)
+						opts->token = s;
+					s += token_len;
+					s--;
+					break;
+			}
+		}
+	}
 }
 
 /*
@@ -2068,11 +2048,10 @@ int	m_who(aClient *cptr, aClient *sptr, int parc, char *parv[])
 {
 	aChannel *chptr;
 	int penalty = 0;
-    char *p, *mask, *channame;
-    struct who_opts opts;
-
-    opts.flags = 0;
-    opts.token = NULL;
+	char *p, *mask, *channame;
+	struct who_opts opts;
+	opts.flags = 0;
+	opts.token = NULL;
 
 	if (parc < 2)
 	{
@@ -2082,8 +2061,9 @@ int	m_who(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		return MAXPENALTY;
 	}
 
-	if(parc > 2) {
-        parse_who_arg(parv[2], &opts);
+	if(parc > 2)
+	{
+		parse_who_arg(parv[2], &opts);
 	}
 
 	/* get rid of duplicates */

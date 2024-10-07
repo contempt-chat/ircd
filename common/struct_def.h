@@ -1039,27 +1039,33 @@ typedef enum ServerChannels {
 #   error LOCALNICKLEN must not be bigger than NICKLEN
 #endif
 
-// Capability flags
+/* Capability flags */
 #define CAP_SASL        	0x0001
 #define CAP_EXTENDED_JOIN   0x0002
 
-// WHO parameter flags
-#define WHO_FLAG_OPERS_ONLY     0x0001
-#define WHO_FLAG_CHANNEL        0x0002
-#define WHO_FLAG_HOP            0x0004
-#define WHO_FLAG_FLAGS          0x0008
-#define WHO_FLAG_HOST           0x0010
-#define WHO_FLAG_IP             0x0020
-#define WHO_FLAG_IDLE           0x0040
-#define WHO_FLAG_NICK           0x0080
-#define WHO_FLAG_INFO           0x0100
-#define WHO_FLAG_SERVER         0x0200
-#define WHO_FLAG_TOKEN          0x0400
-#define WHO_FLAG_USER           0x0800
-#define WHO_FLAG_ACCOUNT        0x1000
-#define WHO_FLAG_OP_LEVEL       0x2000
-#define WHO_FLAG_SID            0x4000
-#define WHO_FLAG_UID            0x8000
+/* WHO parameter flags */
+#define WHO_FLAG_OPERS_ONLY	0x0001
+#define WHO_FLAG_CHANNEL	0x0002
+#define WHO_FLAG_HOP		0x0004
+#define WHO_FLAG_FLAGS		0x0008
+#define WHO_FLAG_HOST		0x0010
+#define WHO_FLAG_IP			0x0020
+#define WHO_FLAG_IDLE		0x0040
+#define WHO_FLAG_NICK		0x0080
+#define WHO_FLAG_INFO		0x0100
+#define WHO_FLAG_SERVER		0x0200
+#define WHO_FLAG_TOKEN		0x0400
+#define WHO_FLAG_USER		0x0800
+#define WHO_FLAG_ACCOUNT	0x1000
+#define WHO_FLAG_OP_LEVEL	0x2000
+#define WHO_FLAG_SID		0x4000
+#define WHO_FLAG_UID		0x8000
+
+struct who_opts
+{
+	int flags;
+	const char *token;
+};
 
 /*
  * base for channel IDs and UIDs
@@ -1077,12 +1083,12 @@ typedef enum ServerChannels {
 /* Runtime configuration structure */
 typedef struct
 {
-	int aconnect;	/* 0: off, 1: on, 2: ND */
+	int aconnect;	/* 0 - OFF 1 - ON */
 	/* standalone splitmode is -1 not 3 */
 	int split;	/* -1: standalone, 0: no, >0 yes (and since when) */
 	int split_minservers;
 	int split_minusers;
-	int caccept;	/* 0: off, 1: on, 2: split */
+	int caccept;	/* 0 - OFF 1 - ON 2 - SPLIT */
 } iconf_t;
 
 /* O:line flags, used also in is_allowed() */
