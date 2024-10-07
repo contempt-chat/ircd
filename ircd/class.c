@@ -174,7 +174,6 @@ void	add_class(int class, int ping, int confreq, int maxli, int sendq,
 		}
 	}
 #endif
-#ifdef CVS3
 
 	/*
 	 * 2014-04-19  Kurt Roeckx
@@ -185,7 +184,6 @@ void	add_class(int class, int ping, int confreq, int maxli, int sendq,
 	{
 		maxli = 0;
 	}
-#endif
 
 	if (maxli < 0)
 	{

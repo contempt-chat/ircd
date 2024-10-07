@@ -1781,9 +1781,9 @@ int snprintf_append(char *str, int size, int pos, const char *fmt, ...) {
 static	void	who_one(aClient *sptr, aClient *acptr, aChannel *repchan,
 		Link *lp, struct who_opts *opts)
 {
-	char	status[5];
+	char status[5];
 	char *s;
-	int	i = 0;
+	int i = 0;
 
 	if (acptr->user->flags & FLAGS_AWAY)
 		status[i++] = 'G';
@@ -1794,79 +1794,65 @@ static	void	who_one(aClient *sptr, aClient *acptr, aChannel *repchan,
 	if ((repchan != NULL) && (lp == NULL))
 		lp = find_user_link(repchan->members, acptr);
 	if (lp != NULL)
-	    {
+	{
 		if (lp->flags & CHFL_CHANOP)
 			status[i++] = '@';
 		else if (lp->flags & CHFL_VOICE)
 			status[i++] = '+';
-	    }
+	}
 	status[i] = '\0';
 
-	if((opts->flags & ~WHO_FLAG_OPERS_ONLY) != 0) {
-        char buf[BUFSIZE];
-        int len = snprintf(buf, BUFSIZE, replies[RPL_WHOSPCRPL], ME, BadTo(sptr->name));
+	if ((opts->flags & ~WHO_FLAG_OPERS_ONLY) != 0)
+	{
+		char buf[BUFSIZE];
+		int len = snprintf(buf, BUFSIZE, replies[RPL_WHOSPCRPL], ME, BadTo(sptr->name));
 
-        if (opts->flags & WHO_FLAG_TOKEN) {
-            len += snprintf_append(buf, BUFSIZE, len, " %s", opts->token != NULL ? opts->token : "0");
-        }
-        if (opts->flags & WHO_FLAG_CHANNEL) {
-            len += snprintf_append(buf, BUFSIZE, len, " %s", (repchan) ? (repchan->chname) : "*");
-        }
-        if (opts->flags & WHO_FLAG_USER) {
-            len += snprintf_append(buf, BUFSIZE, len, " %s", acptr->user->username);
-        }
-        if (opts->flags & WHO_FLAG_IP) {
-            len += snprintf_append(buf, BUFSIZE, len, " %s", get_client_ip(acptr));
-        }
-        if (opts->flags & WHO_FLAG_HOST) {
-            len += snprintf_append(buf, BUFSIZE, len, " %s", acptr->user->host);
-        }
-        if (opts->flags & WHO_FLAG_SERVER) {
-            len += snprintf_append(buf, BUFSIZE, len, " %s", acptr->user->server);
-        }
-        if (opts->flags & WHO_FLAG_NICK) {
-            len += snprintf_append(buf, BUFSIZE, len, " %s", acptr->name);
-        }
-        if (opts->flags & WHO_FLAG_FLAGS) {
-            len += snprintf_append(buf, BUFSIZE, len, " %s", status);
-        }
-        if (opts->flags & WHO_FLAG_HOP) {
-            len += snprintf_append(buf, BUFSIZE, len, " %d", acptr->hopcount);
-        }
-        if (opts->flags & WHO_FLAG_IDLE) {
-            len += snprintf_append(buf, BUFSIZE, len, " %ld",
-                                   MyClient(acptr) ? (long)(timeofday - acptr->user->last): 0);
-        }
-        if (opts->flags & WHO_FLAG_ACCOUNT) {
-            if (IsSASLAuthed(acptr))
-            {
-                len += snprintf_append(buf, BUFSIZE, len, " %s", acptr->sasl_user);
-            }
-            else {
-                len += snprintf_append(buf, BUFSIZE, len, " 0");
-            }
-        }
-        if (opts->flags & WHO_FLAG_OP_LEVEL) {
-            len += snprintf_append(buf, BUFSIZE, len, " n/a");
-        }
-        if (opts->flags & WHO_FLAG_SID) {
-            len += snprintf_append(buf, BUFSIZE, len, " %s", acptr->user->servp->sid);
-        }
-        if (opts->flags & WHO_FLAG_UID) {
-            len += snprintf_append(buf, BUFSIZE, len, " %s", acptr->uid);
-        }
-        if (opts->flags & WHO_FLAG_INFO) {
-            len += snprintf_append(buf, BUFSIZE, len, " :%s", acptr->info);
-        }
+		if (opts->flags & WHO_FLAG_TOKEN)
+			len += snprintf_append(buf, BUFSIZE, len, " %s", opts->token != NULL ? opts->token : "0");
+		if (opts->flags & WHO_FLAG_CHANNEL)
+			len += snprintf_append(buf, BUFSIZE, len, " %s", (repchan) ? (repchan->chname) : "*");
+		if (opts->flags & WHO_FLAG_USER)
+			len += snprintf_append(buf, BUFSIZE, len, " %s", acptr->user->username);
+		if (opts->flags & WHO_FLAG_IP)
+			len += snprintf_append(buf, BUFSIZE, len, " %s", get_client_ip(acptr));
+		if (opts->flags & WHO_FLAG_HOST)
+			len += snprintf_append(buf, BUFSIZE, len, " %s", acptr->user->host);
+		if (opts->flags & WHO_FLAG_SERVER)
+			len += snprintf_append(buf, BUFSIZE, len, " %s", acptr->user->server);
+		if (opts->flags & WHO_FLAG_NICK)
+			len += snprintf_append(buf, BUFSIZE, len, " %s", acptr->name);
+		if (opts->flags & WHO_FLAG_FLAGS)
+			len += snprintf_append(buf, BUFSIZE, len, " %s", status);
+		if (opts->flags & WHO_FLAG_HOP)
+			len += snprintf_append(buf, BUFSIZE, len, " %d", acptr->hopcount);
+		if (opts->flags & WHO_FLAG_IDLE)
+			len += snprintf_append(buf, BUFSIZE, len, " %ld",
+								   MyClient(acptr) ? (long) (timeofday - acptr->user->last) : 0);
+		if (opts->flags & WHO_FLAG_ACCOUNT)
+		{
+			if (IsSASLAuthed(acptr))
+				len += snprintf_append(buf, BUFSIZE, len, " %s", acptr->sasl_user);
+			else
+				len += snprintf_append(buf, BUFSIZE, len, " 0");
+		}
+		if (opts->flags & WHO_FLAG_OP_LEVEL)
+			len += snprintf_append(buf, BUFSIZE, len, " n/a");
+		if (opts->flags & WHO_FLAG_SID)
+			len += snprintf_append(buf, BUFSIZE, len, " %s", acptr->user->servp->sid);
+		if (opts->flags & WHO_FLAG_UID)
+			len += snprintf_append(buf, BUFSIZE, len, " %s", acptr->uid);
+		if (opts->flags & WHO_FLAG_INFO)
+			len += snprintf_append(buf, BUFSIZE, len, " :%s", acptr->info);
 
-        sendto_one(sptr, buf);
-    }
-	else {
-        sendto_one(sptr, replies[RPL_WHOREPLY], ME, BadTo(sptr->name),
-                   (repchan) ? (repchan->chname) : "*", acptr->user->username,
-                   acptr->user->host, acptr->user->server, acptr->name,
-                   status, acptr->hopcount, acptr->user->servp->sid, acptr->info);
-    }
+		sendto_one(sptr, buf);
+	}
+	else
+	{
+		sendto_one(sptr, replies[RPL_WHOREPLY], ME, BadTo(sptr->name),
+				   (repchan) ? (repchan->chname) : "*", acptr->user->username,
+				   acptr->user->host, acptr->user->server, acptr->name,
+				   status, acptr->hopcount, acptr->user->servp->sid, acptr->info);
+	}
 }
 
 /*

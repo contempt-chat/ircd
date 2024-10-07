@@ -150,19 +150,6 @@
 
 /************************************************************************
  *
- * CVS3 (see doc/CVS3.txt for more details)
- *
- * CVS3
- *
- *  undef to disable (most of) cvs irc2.11.3 fixes
- *
- */
-
-#define CVS3
-
-
-/************************************************************************
- *
  * whoistls (see doc/whoistls.txt)
  *
  * WHOISTLS
