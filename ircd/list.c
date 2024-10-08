@@ -127,7 +127,7 @@ aClient	*make_client(aClient *from)
 	(void)strcpy(cptr->username, "unknown");
 	cptr->info = DefInfo;
 	if (size == CLIENT_LOCAL_SIZE)
-	    {
+	{
 		cptr->since = cptr->lasttime = cptr->firsttime = timeofday;
 		cptr->confs = NULL;
 		cptr->sockhost[0] = '\0';
@@ -150,7 +150,7 @@ aClient	*make_client(aClient *from)
 #ifdef SPOOF
         cptr->cloak_tmp = NULL;
 #endif
-	    }
+	}
 	return (cptr);
 }
 

@@ -191,14 +191,12 @@ char	*iline_flags_to_string(long flags)
  * D - delayed port
  * S - server only port
  */
-#ifdef WHOISTLS
 /*
  * T - secure (SSL/TLS) port
  *
  * This only marks the port as secure, you must ensure that it actually is  -- mh 2020-04-27
  *
  */
-#endif
 long pline_flags_parse(char *string)
 {
 	long tmp = 0;
@@ -210,12 +208,10 @@ long pline_flags_parse(char *string)
 	{
 		tmp |= PFLAG_SERVERONLY;
 	}
-#ifdef WHOISTLS
 	if (index(string, 'T'))
 	{
 		tmp |= PFLAG_TLS;
 	}
-#endif
 	return tmp;
 }
 /* Convert P-line flags from integer to string
@@ -235,12 +231,10 @@ char *pline_flags_to_string(long flags)
 		*s++ = 'S';
 	}
 
-#ifdef WHOISTLS
 	if (flags & PFLAG_TLS)
 	{
 		*s++ = 'T';
 	}
-#endif
 	
 	if (s == pfsbuf)
 	{

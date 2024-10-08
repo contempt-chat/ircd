@@ -2262,14 +2262,12 @@ static	void	send_whois(aClient *sptr, aClient *acptr)
 	{
 		sendto_one(sptr, replies[RPL_WHOISCLOAKED], ME, BadTo(sptr->name), name, SPOOF_WHOISCLOAKED);
 	}
-#ifdef WHOISTLS
 	/* send a 320 numeric RPL_WHOISTLS reply if client is connected with SSL/TLS.
 	 * reply defined as WHOISTLS in config.h -- mh 2020-04-27 */
 	if (IsTLS(acptr))
 	{
 		sendto_one(sptr, replies[RPL_WHOISTLS], ME, BadTo(sptr->name), name, WHOISTLS);
 	}
-#endif
 
 	if (acptr->user && MyConnect(acptr)
 	    && (acptr == sptr || !IsHidingIdletime(acptr) || IsAnOper(sptr))
@@ -2471,12 +2469,10 @@ int	m_user(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	user->servp = me.serv;
 	me.serv->refcnt++;
 
-#ifdef WHOISTLS
 	if (IsConfTLS(cptr->acpt->confs->value.aconf))
 	{
 		SetTLS(sptr);
 	}
-#endif
 
 #ifdef	DEFAULT_INVISIBLE
 	SetInvisible(sptr);

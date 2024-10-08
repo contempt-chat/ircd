@@ -201,9 +201,7 @@ typedef enum Status {
 #ifdef XLINE
 #define FLAGS_XLINED	0x0100	/* X-lined client */
 #endif
-#ifdef WHOISTLS
 #define FLAGS_TLS       0x0400 /* user is on a secure connection port (SSL/TLS) -- mh 2020-04-27 */
-#endif
 #define FLAGS_HMODE     0x0800 /* oper is hiding his idletime */
 #define FLAGS_MSGNEEDSASLAUTH     0x1000 /* user accepts messages only from authenticated users */
 
@@ -280,10 +278,8 @@ typedef enum Status {
 #define IsSpoofed(x)        ((x)->user && (x)->user->flags & FLAGS_SPOOFED)
 #define SetSpoofed(x)       ((x)->user->flags |= FLAGS_SPOOFED)
 #endif
-#ifdef WHOISTLS
 #define IsTLS(x)        ((x)->user && (x)->user->flags & FLAGS_TLS)
 #define SetTLS(x)       ((x)->user->flags |= FLAGS_TLS)
-#endif
 #define IsCAPNegotiation(x)	(MyConnect(x) && (x)->cap_negotation)
 #define HasCap(x, y)		(MyConnect(x) && (x)->caps & y)
 #define IsSASLAuthed(x)		 ((x)->flags & FLAGS_SASL)
@@ -425,14 +421,10 @@ struct	ListItem	{
 
 #define PFLAG_DELAYED		0x00001
 #define PFLAG_SERVERONLY	0x00002
-#ifdef WHOISTLS
 #define PFLAG_TLS           0x00004
-#endif
 #define IsConfDelayed(x)	((x)->flags & PFLAG_DELAYED)
 #define IsConfServeronly(x)	((x)->flags & PFLAG_SERVERONLY)
-#ifdef WHOISTLS
 #define IsConfTLS(x)        ((x)->flags & PFLAG_TLS)
-#endif
 
 #define	IsIllegal(x)	((x)->status & CONF_ILLEGAL)
 

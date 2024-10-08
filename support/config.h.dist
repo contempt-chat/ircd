@@ -198,53 +198,6 @@
 #define HELLOVERRIDE_SCH_NOTICES
 #endif
 
-
-/************************************************************************
- *
- * cmz
- *
- * (only available when WHOISTLS is defined)
- * (non-rfc but de-facto standard use of numeric 489)
- *
- * CMZ_LOCAL
- *
- *  undef to disable, or define to enable channel operators set a local
- *  &channel +z and only allow in users connected securely with SSL/TLS
- *
- * CMZ_ISUPPORT
- *
- *  (only available when CMZ_LOCAL is defined)
- *
- *  undef to disable, or define to enable showing secure channel modes
- *  in ISUPPORT
- *
- * CMZ_LOCAL_NOTICE
- *
- *  (only available when CMZ_LOCAL is defined)
- *
- *  undef to disable sending a notice to clients trying to join a +z
- *  local channel without a SSL/TLS connection
- *
- * CMZ_LOCAL_NOTICE_CHANGE
- *
- *  (only available when CMZ_LOCAL is defined)
- *
- *  undef to disable sending a notice to channels when upgrading or
- *  downgrading the flag (server modes -z+Z and -Z+z)
- *
- */
-
-#ifdef WHOISTLS
-#define CMZ_LOCAL
-#endif
-
-#ifdef CMZ_LOCAL
-#define CMZ_ISUPPORT
-#define CMZ_LOCAL_NOTICE
-#define CMZ_LOCAL_NOTICE_CHANGE
-#endif
-
-
 /*
  *  ircdwatch configuration options.
  */
@@ -1092,17 +1045,6 @@
 #else
 /* we dont want this if HELLOVERRIDE is not defined */
 #undef HELLOVERRIDE_SCH_NOTICES
-#endif
-
-#ifdef CMZ_LOCAL
-#ifndef WHOISTLS
-# error Sorry, WHOISTLS define is required when CMZ_LOCAL is defined.
-#endif
-#else
-/* we dont want these if CMZ_LOCAL is not defined */
-#undef CMZ_ISUPPORT
-#undef CMZ_LOCAL_NOTICE
-#undef CMZ_LOCAL_NOTICE_CHANGE
 #endif
 
 #ifndef ENABLE_SUMMON
