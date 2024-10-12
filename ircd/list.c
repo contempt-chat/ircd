@@ -143,12 +143,12 @@ aClient	*make_client(aClient *from)
 		cptr->user2 = NULL;
 		cptr->user3 = NULL;
 #endif
-        cptr->cap_negotation = 0;
-        cptr->caps = 0;
-        cptr->sasl_service = NULL;
-        cptr->sasl_auth_attempts = 0;
+		cptr->cap_negotation = 0;
+		cptr->caps = 0;
+		cptr->sasl_service = NULL;
+		cptr->sasl_auth_attempts = 0;
 #ifdef SPOOF
-        cptr->cloak_tmp = NULL;
+		cptr->cloak_tmp = NULL;
 #endif
 	}
 	return (cptr);
@@ -222,7 +222,6 @@ anUser	*make_user(aClient *cptr, int iplen)
 		cptr->user = user;
 		user->servp = NULL;
 		user->bcptr = cptr;
-
 		if (cptr->next)	/* the only cptr->next == NULL is me */
 			istat.is_users++;
 	    }
@@ -322,7 +321,6 @@ void	free_user(anUser *user)
 			istat.is_awaymem -= (strlen(user->away) + 1);
 			MyFree(user->away);
 		}
-
 		MyFree(user);
 #ifdef	DEBUGMODE
 		users.inuse--;

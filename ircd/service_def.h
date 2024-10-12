@@ -29,11 +29,11 @@
 
 #define	SERVICE_WANT_CLIENTS	0x40000000 /* &CLIENTS */
 
-#define	SERVICE_WANT_TKLINE     0x00100000 /* service wants to TKLINE */
-#define	SERVICE_WANT_KLINE      0x00200000 /* service wants to KLINE */
-#define	SERVICE_WANT_ENCAP      0x00400000 /* service wants to ENCAP */
-#define SERVICE_WANT_SASL       0x00800000 /* service wants SASL requests */
-#define SERVICE_WANT_FORCENICK  0x01000000 /* service wants to FORCENICK */
+#define	SERVICE_WANT_TKLINE		0x00100000 /* service wants to TKLINE */
+#define	SERVICE_WANT_KLINE		0x00200000 /* service wants to KLINE */
+#define	SERVICE_WANT_ENCAP		0x00400000 /* service wants to ENCAP */
+#define SERVICE_WANT_SASL		0x00800000 /* service wants SASL requests */
+#define SERVICE_WANT_FORCENICK	0x01000000 /* service wants to FORCENICK */
 
 /* masks */
 #define	SERVICE_MASK_GLOBAL	0x00007000 /*for these,service must be global*/

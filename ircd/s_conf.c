@@ -3133,7 +3133,8 @@ badkline:
 #ifdef KLINE
 int	m_kline(aClient *cptr, aClient *sptr, int parc, char **parv)
 {
-	if (!is_allowed(sptr, ACL_KLINE) && !is_service_allowed(sptr, SERVICE_WANT_KLINE))
+	if (!is_allowed(sptr, ACL_KLINE)
+			&& !(IsService(sptr) && is_allowed(sptr, SERVICE_WANT_KLINE)))
 		return m_nopriv(cptr, sptr, parc, parv);
 	return prep_kline(0, cptr, sptr, parc, parv);
 }
@@ -3142,7 +3143,8 @@ int	m_kline(aClient *cptr, aClient *sptr, int parc, char **parv)
 #ifdef TKLINE
 int	m_tkline(aClient *cptr, aClient *sptr, int parc, char **parv)
 {
-	if (!is_allowed(sptr, ACL_TKLINE) && !is_service_allowed(sptr, SERVICE_WANT_TKLINE))
+	if (!is_allowed(sptr, ACL_TKLINE)
+			&& !(IsService(sptr) && is_allowed(sptr, SERVICE_WANT_TKLINE)))
 		return m_nopriv(cptr, sptr, parc, parv);
 	return prep_kline(1, cptr, sptr, parc, parv);
 }
@@ -3153,7 +3155,8 @@ int	m_untkline(aClient *cptr, aClient *sptr, int parc, char **parv)
 	char	*user, *host;
 	int	deleted = 0;
 	
-	if (!is_allowed(sptr, ACL_UNTKLINE) && !is_service_allowed(sptr, SERVICE_WANT_TKLINE))
+	if (!is_allowed(sptr, ACL_UNTKLINE)
+			&& !(IsService(sptr) && is_allowed(sptr, SERVICE_WANT_TKLINE)))
 		return m_nopriv(cptr, sptr, parc, parv);
 
 	user = parv[1];

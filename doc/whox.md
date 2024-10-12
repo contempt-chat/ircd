@@ -3,21 +3,21 @@
 See https://ircv3.net/specs/extensions/whox
 
 ## Standard fields
-| Field  | Description    | Hint           |
-| ------ | -------------- | -------------- |
-|t| \<token\> specified by the client||
-|c| an arbitrary channel the client is joined to||
-|u| username||
-|i| IP address||
-|h| hostname||
-|s| server name||
-|n| nickname||
-|f| WHO flags (away, server operator, etc)||
-|d| hop count (distance)||
-|l| number of seconds the user has been idle for| Idle time of users on other servers is not available |
-|a| account name|SASL account name or "0" if the user is not logged in|
-|o| channel op level|Always "n/a"|
-|r| realname||
+| Field  | Description                                  | Hint           |
+| ------ |----------------------------------------------| -------------- |
+|t| the \<token\> specified by the client        ||
+|c| an arbitrary channel the client is joined to ||
+|u| username                                     ||
+|i| IP address                                   ||
+|h| hostname                                     ||
+|s| server name                                  ||
+|n| nickname                                     ||
+|f| WHO flags (away, server operator, etc)       ||
+|d| hop count (distance)                         ||
+|l| number of seconds the user has been idle for | Idle time of users on other servers is not available |
+|a| account name                                 |SASL account name or "0" if the user is not logged in|
+|o| channel op level                             |Always "n/a"|
+|r| realname                                     ||
 
 ## Additional non-standard fields
 The following additional fields have been added:
@@ -60,10 +60,9 @@ All information and token 123
     :dev.irc.it 354 test 123 #ircd ~patrick 54.38.153.88 de.ircnet.com nova.irc.it patrick_ H 1 0 0 n/a 380I 380IAAADS :email: patrick@ircnet.com
     :dev.irc.it 354 test 123 #ircd ~patrick 255.255.255.255 patrick.users.contempt.chat nova.irc.it patrick H*@ 1 0 patrick n/a 380I 380IAAADL :Patrick
     :dev.irc.it 315 test #ircd :End of WHO list.
-    
+
 Legacy: Former 'o' flag which filters for opers is still working with or without WHOX fields
 
     who #ircd o%cn 
     :dev.irc.it 354 test #ircd patrick
     :dev.irc.it 315 test #ircd :End of WHO list.
-

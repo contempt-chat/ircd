@@ -489,7 +489,6 @@ struct	User	{
 	char	username[USERLEN+1];
 	char	host[HOSTLEN+1];
 	char	*server;
-
 	u_int	hhashv;		/* hostname hash value */
 	u_int	iphashv;	/* IP hash value */
 	struct User *hhnext;	/* next entry in hostname hash */
@@ -532,7 +531,7 @@ struct	Service	{
 	char	namebuf[HOSTLEN+1];
 	int	wants;
 	int	type;
-	int local_flags; /* flags that the service has on this ircd, e.g. to TKLINE remotely */
+	int permissions; /* service flags that have been granted by this server */
 	char	*server;
 	aServer	*servp;
 	struct	Service	*nexts, *prevs;

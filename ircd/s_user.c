@@ -3609,17 +3609,14 @@ int	is_allowed(aClient *cptr, long function)
 {
 	Link	*tmp;
 
-    if (IsService(cptr))
-        return 0; // use is_service_allowed()
+	if (IsService(cptr))
+	{
+		return cptr->service->permissions & function;
+	}
 
 	/* We cannot judge not our clients. Yet. */
-	if ((!MyConnect(cptr) && (IsAnOper(cptr))) || IsServer(cptr))
+	if (!MyConnect(cptr) || IsServer(cptr))
 		return 1;
-
-	/* cptr->confs is not allocated for remote clients. */
-	if(!MyConnect(cptr)) {
-		return 0;
-	}
 
 	for (tmp = cptr->confs; tmp; tmp = tmp->next)
 	{
@@ -3636,24 +3633,6 @@ int	is_allowed(aClient *cptr, long function)
 		return 1;
 
 	return 0;
-}
-
-/*
-** Checks if a local or remote service is allowed execute a function.
-** Return 1 for OK, 0 for forbidden.
-*/
-int	is_service_allowed(aClient *cptr, long function)
-{
-    if (!IsService(cptr)) {
-        return 0;
-    }
-
-    if(MyService(cptr)) {
-        return cptr->service->wants & function;
-    }
-    else {
-        return cptr->service->local_flags & function;
-    }
 }
 
 void send_away(aClient *sptr, aClient *acptr)

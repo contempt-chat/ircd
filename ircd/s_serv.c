@@ -1420,10 +1420,9 @@ int	m_info(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		sendto_one(sptr, ":%s %d %s :On-line since %s",
 			   ME, RPL_INFO, parv[0],
 			   myctime(me.firsttime));
-#if defined(GIT_HASH) && defined(GIT_HASH_IN_VERSION)
-			sendto_one(sptr, ":%s %d %s :Git commit hash: %s",
-					   ME, RPL_INFO, parv[0],
-					   GIT_HASH);
+#ifdef GIT_HASH
+		sendto_one(sptr, ":%s %d %s :Git commit hash: %s",
+				   ME, RPL_INFO, parv[0], GIT_HASH);
 #endif
 		sendto_one(sptr, replies[RPL_ENDOFINFO], ME, BadTo(parv[0]));
 		return 5;
@@ -3804,6 +3803,11 @@ static void report_listeners(aClient *sptr, char *to)
 		{
 			if (iconf.caccept == 0)
 				what = "noaccept";
+			/*
+			 * 2011-01-20  Piotr Kucharski
+			 *  * s_bsd.c/read_listener(), s_serv.c/report_listeners(): use IsSplit()
+			 *    instead of iconf.split==1 (reported by BR).
+			 */
 			else if (iconf.caccept == 2 && IsSplit())
 				what = "splitnoaccept";
 			else
