@@ -1421,7 +1421,7 @@ int	m_info(aClient *cptr, aClient *sptr, int parc, char *parv[])
 			   ME, RPL_INFO, parv[0],
 			   myctime(me.firsttime));
 #if defined(GIT_HASH) && defined(GIT_HASH_IN_VERSION)
-			sendto_one(sptr, ":%s %d %s :Git Hash: %s",
+			sendto_one(sptr, ":%s %d %s :Git commit hash: %s",
 					   ME, RPL_INFO, parv[0],
 					   GIT_HASH);
 #endif
